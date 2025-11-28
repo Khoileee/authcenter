@@ -7,11 +7,11 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const menuItems = [
   { title: "Người dùng & Vai trò", url: "/users-roles", icon: Users },
@@ -22,41 +22,54 @@ const menuItems = [
 
 export function AppSidebar() {
   const { state } = useSidebar();
-  const location = useLocation();
-  const currentPath = location.pathname;
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border p-5">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-            <Shield className="h-5 w-5 text-white" />
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar-background/95 backdrop-blur-xl">
+      <SidebarHeader className="border-b border-sidebar-border/50 p-5 group-data-[collapsible=icon]:p-3 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center transition-all duration-300">
+        <div className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0">
+          <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">
+            <Shield className="h-6 w-6 text-white" />
           </div>
-          {!isCollapsed && (
-            <span className="text-lg font-bold text-sidebar-foreground tracking-tight">Auth Center</span>
-          )}
+          <div className={cn(
+            "flex flex-col min-w-0 transition-all duration-300 ease-in-out",
+            isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+          )}>
+            <span className="text-lg font-bold text-sidebar-foreground tracking-tight whitespace-nowrap">Auth Center</span>
+            <span className="text-xs text-sidebar-foreground/60 font-medium whitespace-nowrap">Admin Dashboard</span>
+          </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
+      <SidebarContent className="px-2 py-6 group-data-[collapsible=icon]:px-1 transition-all duration-300">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+            <SidebarMenu className="gap-1">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <SidebarMenuItem key={item.title} className="list-none">
                     <NavLink
                       to={item.url}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all hover:bg-sidebar-accent group"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-semibold shadow-sm"
+                      className={cn(
+                        "flex items-center rounded-xl transition-all duration-300 ease-in-out hover:bg-sidebar-accent",
+                        "h-11 px-3 gap-3 justify-start",
+                        "group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:justify-center"
+                      )}
+                      activeClassName="!bg-primary/10 !text-primary font-medium"
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110" />
-                      {!isCollapsed && <span className="text-sm">{item.title}</span>}
+                      <Icon className="h-5 w-5 flex-shrink-0 transition-transform duration-300 hover:scale-110" />
+                      <span className={cn(
+                        "text-sm transition-all duration-300 ease-in-out whitespace-nowrap",
+                        isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+                      )}>
+                        {item.title}
+                      </span>
                     </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

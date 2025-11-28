@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, ShieldCheck } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -22,23 +22,28 @@ export default function PermissionCheck() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <AppHeader title="Kiểm tra quyền" />
-      
-      <main className="flex-1 p-6">
+
+      <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Input Card */}
-            <Card>
+            <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>Thông tin kiểm tra</CardTitle>
-                <CardDescription>Nhập thông tin để kiểm tra quyền truy cập</CardDescription>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <CardTitle>Thông tin kiểm tra</CardTitle>
+                </div>
+                <CardDescription>Nhập thông tin để kiểm tra quyền truy cập của người dùng đối với tài nguyên</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label>Chọn người dùng</Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-background/50">
                       <SelectValue placeholder="Chọn người dùng..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -52,7 +57,7 @@ export default function PermissionCheck() {
                 <div className="space-y-2">
                   <Label>Chọn tài nguyên</Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-background/50">
                       <SelectValue placeholder="Chọn tài nguyên..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -66,7 +71,7 @@ export default function PermissionCheck() {
                 <div className="space-y-2">
                   <Label>Chọn hành động</Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-background/50">
                       <SelectValue placeholder="Chọn hành động..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -81,61 +86,81 @@ export default function PermissionCheck() {
                   <Label>Dữ liệu bổ sung (JSON - tùy chọn)</Label>
                   <Textarea
                     placeholder='{"context": "additional data"}'
-                    className="font-mono text-sm"
+                    className="font-mono text-sm bg-background/50"
                     rows={4}
                   />
                 </div>
 
-                <Button onClick={handleCheck} className="w-full">
+                <Button onClick={handleCheck} className="w-full shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]">
                   Kiểm tra quyền
                 </Button>
               </CardContent>
             </Card>
 
             {/* Result Card */}
-            <Card>
+            <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm h-full">
               <CardHeader>
                 <CardTitle>Kết quả kiểm tra</CardTitle>
-                <CardDescription>Kết quả phân quyền và chi tiết</CardDescription>
+                <CardDescription>Kết quả phân quyền và chi tiết giải thích</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="h-[calc(100%-5rem)]">
                 {result === null ? (
-                  <div className="flex items-center justify-center h-64 text-muted-foreground">
-                    Nhập thông tin và nhấn "Kiểm tra quyền" để xem kết quả
+                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground border-2 border-dashed rounded-xl p-12 bg-muted/30">
+                    <ShieldCheck className="h-12 w-12 mb-4 opacity-20" />
+                    <p>Nhập thông tin và nhấn "Kiểm tra quyền" để xem kết quả</p>
                   </div>
                 ) : (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-center p-8">
+                  <div className="space-y-6 animate-in fade-in zoom-in duration-300">
+                    <div className="flex items-center justify-center p-8 bg-background/50 rounded-xl border border-border/50">
                       {result === "allow" ? (
                         <div className="text-center">
-                          <CheckCircle className="h-20 w-20 text-success mx-auto mb-4" />
-                          <h3 className="text-2xl font-bold text-success">ALLOW</h3>
-                          <p className="text-muted-foreground mt-2">Quyền truy cập được cho phép</p>
+                          <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4 animate-in zoom-in-50 duration-500">
+                            <CheckCircle className="h-12 w-12 text-success" />
+                          </div>
+                          <h3 className="text-3xl font-bold text-success tracking-tight">ALLOW</h3>
+                          <p className="text-muted-foreground mt-2 font-medium">Quyền truy cập được cho phép</p>
                         </div>
                       ) : (
                         <div className="text-center">
-                          <XCircle className="h-20 w-20 text-destructive mx-auto mb-4" />
-                          <h3 className="text-2xl font-bold text-destructive">DENY</h3>
-                          <p className="text-muted-foreground mt-2">Quyền truy cập bị từ chối</p>
+                          <div className="w-24 h-24 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4 animate-in zoom-in-50 duration-500">
+                            <XCircle className="h-12 w-12 text-destructive" />
+                          </div>
+                          <h3 className="text-3xl font-bold text-destructive tracking-tight">DENY</h3>
+                          <p className="text-muted-foreground mt-2 font-medium">Quyền truy cập bị từ chối</p>
                         </div>
                       )}
                     </div>
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold mb-2">Chi tiết</h4>
-                        <div className="bg-muted p-4 rounded-md space-y-2 text-sm">
-                          <p><span className="font-medium">Policy áp dụng:</span> "User khoiln1 Special Access"</p>
-                          <p><span className="font-medium">Vai trò:</span> Data Analyst</p>
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          <span className="w-1 h-4 bg-primary rounded-full"></span>
+                          Chi tiết
+                        </h4>
+                        <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm border border-border/50">
+                          <p><span className="font-medium text-foreground/80">Policy áp dụng:</span> "User khoiln1 Special Access"</p>
+                          <p><span className="font-medium text-foreground/80">Vai trò:</span> Data Analyst</p>
                         </div>
                       </div>
 
                       <div>
-                        <h4 className="font-semibold mb-2">Điều kiện đúng</h4>
-                        <div className="bg-muted p-4 rounded-md space-y-1 text-sm">
-                          <p>✓ user.username == "khoiln1"</p>
-                          <p>✓ resource == "menu.data_quality"</p>
-                          <p>✓ action == "view_menu"</p>
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          <span className="w-1 h-4 bg-primary rounded-full"></span>
+                          Điều kiện đúng
+                        </h4>
+                        <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm border border-border/50">
+                          <div className="flex items-center gap-2 text-success">
+                            <CheckCircle className="h-3 w-3" />
+                            <span className="font-mono">user.username == "khoiln1"</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-success">
+                            <CheckCircle className="h-3 w-3" />
+                            <span className="font-mono">resource == "menu.data_quality"</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-success">
+                            <CheckCircle className="h-3 w-3" />
+                            <span className="font-mono">action == "view_menu"</span>
+                          </div>
                         </div>
                       </div>
                     </div>
