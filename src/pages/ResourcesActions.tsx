@@ -11,9 +11,13 @@ export default function ResourcesActions() {
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           <Tabs defaultValue="resources" className="w-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="resources">Tài nguyên</TabsTrigger>
-              <TabsTrigger value="actions">Hành động</TabsTrigger>
+            <TabsList className="mb-6 bg-muted/50 p-1">
+              <TabsTrigger value="resources" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                Tài nguyên
+              </TabsTrigger>
+              <TabsTrigger value="actions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                Hành động
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="resources" className="mt-0">
