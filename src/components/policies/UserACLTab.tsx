@@ -196,21 +196,21 @@ export function UserACLTab() {
 
             {/* ACL Permission Matrix */}
             {selectedUser && (
-                <Card>
-                    <div className="overflow-x-auto">
+                <Card className="overflow-hidden">
+                    <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
                         <table className="w-full">
-                            <thead>
+                            <thead className="sticky top-0 z-10 bg-card">
                                 <tr className="border-b bg-muted/50">
-                                    <th className="text-left p-4 font-semibold text-foreground min-w-[300px]">
+                                    <th className="text-left p-4 font-semibold text-foreground min-w-[300px] bg-muted/50">
                                         Menu / Chức năng
                                     </th>
-                                    <th className="text-center p-4 font-semibold text-foreground w-[140px]">
+                                    <th className="text-center p-4 font-semibold text-foreground w-[140px] bg-muted/50">
                                         Kế thừa
                                     </th>
-                                    <th className="text-center p-4 font-semibold text-foreground w-[180px]">
+                                    <th className="text-center p-4 font-semibold text-foreground w-[180px] whitespace-nowrap bg-muted/50">
                                         Chỉ dữ liệu sở hữu
                                     </th>
-                                    <th className="text-center p-4 font-semibold text-foreground w-[140px]">
+                                    <th className="text-center p-4 font-semibold text-foreground w-[140px] bg-muted/50">
                                         Toàn bộ
                                     </th>
                                 </tr>
@@ -279,7 +279,7 @@ export function UserACLTab() {
                     </div>
 
                     {/* Save Button */}
-                    <div className="p-4 border-t flex justify-end">
+                    <div className="p-4 border-t flex justify-end bg-background">
                         <Button onClick={handleSave} className="shadow-lg shadow-primary/20">
                             Lưu quyền ACL
                         </Button>

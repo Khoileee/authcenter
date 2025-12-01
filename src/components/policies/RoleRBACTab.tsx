@@ -4,50 +4,121 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Eye, Pencil, Copy, Trash2, Search } from "lucide-react";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { useState } from "react";
 import { RuleDetailPanel } from "./RuleDetailPanel";
-import { DynamicGroupPanel } from "./DynamicGroupPanel";
 
 const mockPolicies = [
     {
         id: 1,
-        name: "Admin Full Access",
-        description: "Quyền truy cập đầy đủ cho Admin",
+        name: "Giao dịch dưới 10 triệu",
+        description: "Áp dụng cho giao dịch có giá trị dưới 10 triệu đồng",
+        resource: "transaction",
+        actions: ["approve", "read", "delete"],
+        appliedTo: "4 vai trò",
         status: "active",
-        appliedTo: "2 vai trò",
         updatedAt: "2024-01-15",
     },
     {
         id: 2,
-        name: "Data Quality - View Only",
-        description: "Chỉ xem Data Quality menu",
-        status: "active",
+        name: "Bảng do đơn vị sở hữu",
+        description: "Các bảng thuộc quyền sở hữu của đơn vị người dùng",
+        resource: "table",
+        actions: ["create", "update", "view"],
         appliedTo: "3 vai trò",
+        status: "active",
         updatedAt: "2024-01-14",
     },
     {
         id: 3,
-        name: "User khoiln1 Special Access",
-        description: "Quyền đặc biệt cho user khoiln1",
+        name: "Truy vấn của bản thân",
+        description: "Các truy vấn SQL do chính người dùng tạo",
+        resource: "sql_query",
+        actions: ["create", "update", "delete"],
+        appliedTo: "1 user set",
         status: "active",
-        appliedTo: "1 người dùng",
         updatedAt: "2024-01-13",
     },
     {
         id: 4,
-        name: "Report Creator",
-        description: "Tạo và chỉnh sửa báo cáo",
+        name: "Phê duyệt job cao giá trị",
+        description: "Phê duyệt job có giá trị ước tính cao",
+        resource: "job",
+        actions: ["approve"],
+        appliedTo: "2 vai trò",
         status: "draft",
-        appliedTo: "0",
         updatedAt: "2024-01-12",
+    },
+    {
+        id: 5,
+        name: "Quản lý Data Quality Rules",
+        description: "Tạo và quản lý các rule kiểm tra chất lượng dữ liệu",
+        resource: "data_quality",
+        actions: ["create", "update", "view"],
+        appliedTo: "2 vai trò, 1 user",
+        status: "active",
+        updatedAt: "2024-01-11",
     },
 ];
 
+const resourceLabels: Record<string, string> = {
+    transaction: "Transaction",
+    table: "Table",
+    sql_query: "SQL Query",
+    job: "Job",
+    data_quality: "Data Quality",
+    feature: "Feature",
+    dashboard: "Dashboard",
+};
+
 const columns: Column<typeof mockPolicies[0]>[] = [
-    { header: "Tên chính sách", accessorKey: "name", className: "font-medium" },
-    { header: "Mô tả", accessorKey: "description", className: "text-muted-foreground" },
+    {
+        header: "STT",
+        cell: (_, index) => <span className="text-muted-foreground">{index + 1}</span>,
+        className: "w-[60px]"
+    },
+    {
+        header: "Tên chính sách",
+        accessorKey: "name",
+        className: "font-medium min-w-[200px]"
+    },
+    {
+        header: "Mô tả",
+        accessorKey: "description",
+        className: "text-muted-foreground max-w-[300px] truncate"
+    },
+    {
+        header: "Resource",
+        cell: (policy) => (
+            <Badge variant="outline" className="font-mono text-xs">
+                {resourceLabels[policy.resource] || policy.resource}
+            </Badge>
+        ),
+    },
+    {
+        header: "Actions",
+        cell: (policy) => (
+            <div className="flex gap-1 flex-wrap max-w-[200px]">
+                {policy.actions.slice(0, 3).map((action) => (
+                    <Badge key={action} variant="secondary" className="text-xs font-mono">
+                        {action}
+                    </Badge>
+                ))}
+                {policy.actions.length > 3 && (
+                    <Badge variant="secondary" className="text-xs">
+                        +{policy.actions.length - 3}
+                    </Badge>
+                )}
+            </div>
+        ),
+    },
+    {
+        header: "Áp dụng cho",
+        accessorKey: "appliedTo",
+        className: "text-sm"
+    },
     {
         header: "Trạng thái",
         cell: (policy) => (
@@ -63,13 +134,16 @@ const columns: Column<typeof mockPolicies[0]>[] = [
             </Badge>
         ),
     },
-    { header: "Áp dụng cho", accessorKey: "appliedTo" },
-    { header: "Cập nhật", accessorKey: "updatedAt", className: "text-muted-foreground" },
+    {
+        header: "Cập nhật",
+        accessorKey: "updatedAt",
+        className: "text-muted-foreground text-sm"
+    },
     {
         header: "Hành động",
         className: "text-right",
         cell: () => (
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-1">
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
                     <Eye className="h-4 w-4" />
                 </Button>
@@ -89,107 +163,24 @@ const columns: Column<typeof mockPolicies[0]>[] = [
 
 export function RoleRBACTab() {
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [isDynamicGroupPanelOpen, setIsDynamicGroupPanelOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterResource, setFilterResource] = useState("all");
+    const [filterStatus, setFilterStatus] = useState("all");
 
     return (
         <div className="space-y-6">
-            <Tabs defaultValue="rbac" className="space-y-6">
+            <Tabs defaultValue="matrix" className="space-y-6">
                 <TabsList>
-                    <TabsTrigger value="rbac">Ma trận RBAC</TabsTrigger>
-                    <TabsTrigger value="abac">Quyền nhóm động (ABAC)</TabsTrigger>
-                    <TabsTrigger value="rules">Danh sách rule</TabsTrigger>
+                    <TabsTrigger value="matrix">Bảng quyền (Policy Matrix)</TabsTrigger>
+                    <TabsTrigger value="rules">Danh sách rule (Rule List)</TabsTrigger>
                 </TabsList>
 
-                {/* A. RBAC Matrix */}
-                <TabsContent value="rbac" className="space-y-0">
+                {/* A. Policy Matrix */}
+                <TabsContent value="matrix" className="space-y-0">
                     <PolicyMatrix />
                 </TabsContent>
 
-                {/* B. Dynamic Groups (ABAC) */}
-                <TabsContent value="abac" className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="text-xl font-bold tracking-tight">Quyền theo nhóm động (ABAC)</h3>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Tạo nhóm người dùng tự động dựa trên thuộc tính và gán quyền cho nhóm
-                            </p>
-                        </div>
-                        <Button onClick={() => setIsDynamicGroupPanelOpen(true)} className="shadow-lg shadow-primary/20">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Tạo nhóm động
-                        </Button>
-                    </div>
-
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="space-y-4">
-                                {/* Mock Dynamic Groups */}
-                                <div className="border rounded-lg p-4 hover:bg-muted/30 transition-colors">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold">Nhân viên PTDL - Quản lý bảng</h4>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                Nhân viên thuộc đơn vị PTDL có quyền quản lý bảng do đơn vị mình sở hữu
-                                            </p>
-                                            <div className="flex gap-2 mt-3">
-                                                <Badge variant="outline" className="font-mono text-xs">
-                                                    user.unit == "PTDL"
-                                                </Badge>
-                                                <Badge variant="outline" className="font-mono text-xs">
-                                                    resource.owner_unit == user.unit
-                                                </Badge>
-                                            </div>
-                                            <div className="flex gap-2 mt-2">
-                                                <Badge variant="secondary">table:edit</Badge>
-                                                <Badge variant="secondary">table:view</Badge>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="border rounded-lg p-4 hover:bg-muted/30 transition-colors">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold">Senior Manager - Phê duyệt job cao giá trị</h4>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                Senior Manager có thể phê duyệt job có giá trị trên 100 triệu
-                                            </p>
-                                            <div className="flex gap-2 mt-3">
-                                                <Badge variant="outline" className="font-mono text-xs">
-                                                    user.seniority == "senior"
-                                                </Badge>
-                                                <Badge variant="outline" className="font-mono text-xs">
-                                                    resource.value {">"} 100000000
-                                                </Badge>
-                                            </div>
-                                            <div className="flex gap-2 mt-2">
-                                                <Badge variant="secondary">job:approve</Badge>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* C. Rule List */}
+                {/* B. Rule List */}
                 <TabsContent value="rules" className="space-y-0">
                     <Card className="border-none shadow-none bg-transparent">
                         <CardHeader className="flex flex-row items-center justify-between px-0 pt-0 pb-6">
@@ -203,12 +194,42 @@ export function RoleRBACTab() {
                             </Button>
                         </CardHeader>
                         <CardContent className="p-0 space-y-4">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Tìm kiếm chính sách..."
-                                    className="pl-9 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all shadow-sm hover:bg-background/80"
-                                />
+                            {/* Filters */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Tìm kiếm chính sách..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all shadow-sm hover:bg-background/80"
+                                    />
+                                </div>
+                                <Select value={filterResource} onValueChange={setFilterResource}>
+                                    <SelectTrigger className="w-full sm:w-[180px]">
+                                        <SelectValue placeholder="Resource" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Tất cả resource</SelectItem>
+                                        <SelectItem value="transaction">Transaction</SelectItem>
+                                        <SelectItem value="table">Table</SelectItem>
+                                        <SelectItem value="sql_query">SQL Query</SelectItem>
+                                        <SelectItem value="job">Job</SelectItem>
+                                        <SelectItem value="data_quality">Data Quality</SelectItem>
+                                        <SelectItem value="feature">Feature</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                    <SelectTrigger className="w-full sm:w-[150px]">
+                                        <SelectValue placeholder="Trạng thái" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Tất cả</SelectItem>
+                                        <SelectItem value="active">Hoạt động</SelectItem>
+                                        <SelectItem value="draft">Nháp</SelectItem>
+                                        <SelectItem value="paused">Tạm dừng</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <DataTable data={mockPolicies} columns={columns} pageSize={10} />
@@ -217,9 +238,8 @@ export function RoleRBACTab() {
                 </TabsContent>
             </Tabs>
 
-            {/* Panels */}
+            {/* Rule Detail Panel */}
             <RuleDetailPanel open={isPanelOpen} onOpenChange={setIsPanelOpen} rule={null} />
-            <DynamicGroupPanel open={isDynamicGroupPanelOpen} onOpenChange={setIsDynamicGroupPanelOpen} />
         </div>
     );
 }

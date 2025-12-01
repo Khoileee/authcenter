@@ -13,7 +13,7 @@ export default function Policies() {
           <Tabs defaultValue="acl" className="flex-1 flex flex-col min-h-0">
             <TabsList className="mb-4">
               <TabsTrigger value="acl">Quyền theo người dùng (ACL)</TabsTrigger>
-              <TabsTrigger value="rbac">Quyền theo vai trò & nhóm động (RBAC + ABAC)</TabsTrigger>
+              <TabsTrigger value="rbac">Quyền theo vai trò & rule (Policy Editor)</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: User ACL */}
@@ -21,7 +21,7 @@ export default function Policies() {
               <UserACLTab />
             </TabsContent>
 
-            {/* Tab 2: Role RBAC + ABAC */}
+            {/* Tab 2: Policy Editor (RBAC + ABAC) */}
             <TabsContent value="rbac" className="flex-1 min-h-0 overflow-auto mt-0">
               <RoleRBACTab />
             </TabsContent>

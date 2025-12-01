@@ -66,11 +66,21 @@ export function RuleDetailPanel({ open, onOpenChange, rule }: RuleDetailPanelPro
     const getAttributeOptions = (group: string) => {
         switch (group) {
             case "user":
-                return ["user.role", "user.branch", "user.country", "user.seniority_level"];
+                return ["user.unit", "user.team", "user.seniority", "user.location", "user.role", "user.branch"];
+            case "resource":
+                return [
+                    "resource.owner_unit",
+                    "resource.responsible_unit",
+                    "resource.value",
+                    "resource.sensitive_level",
+                    "resource.status",
+                    "resource.created_by",
+                    "resource.branch"
+                ];
             case "transaction":
                 return ["transaction.amount", "transaction.currency", "transaction.branch", "transaction.channel", "transaction.country"];
             case "context":
-                return ["request.time_of_day", "request.ip_country"];
+                return ["request.time_of_day", "request.ip_country", "context.timestamp"];
             default:
                 return [];
         }
@@ -168,9 +178,12 @@ export function RuleDetailPanel({ open, onOpenChange, rule }: RuleDetailPanelPro
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="transaction">transaction</SelectItem>
-                                    <SelectItem value="account">account</SelectItem>
-                                    <SelectItem value="customer">customer</SelectItem>
-                                    <SelectItem value="data_quality">data_quality</SelectItem>
+                                    <SelectItem value="table">table</SelectItem>
+                                    <SelectItem value="sql_query">sql_query</SelectItem>
+                                    <SelectItem value="job">job</SelectItem>
+                                    <SelectItem value="feature">feature</SelectItem>
+                                    <SelectItem value="dq_rule">dq_rule</SelectItem>
+                                    <SelectItem value="dashboard">dashboard</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -202,43 +215,80 @@ export function RuleDetailPanel({ open, onOpenChange, rule }: RuleDetailPanelPro
                             <Label>Đối tượng chính (WHO)</Label>
                             <RadioGroup value={subjectType} onValueChange={setSubjectType}>
                                 <div className="space-y-3">
+                                    {/* Option 1: Role */}
                                     <div className="flex items-start space-x-3">
                                         <RadioGroupItem value="role" id="role-panel" className="mt-1" />
                                         <div className="flex-1 space-y-2">
                                             <Label htmlFor="role-panel" className="font-medium cursor-pointer">
                                                 Áp dụng cho Role
                                             </Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Chọn các vai trò đã được khai báo ở menu "Vai trò"
+                                            </p>
                                             {subjectType === "role" && (
                                                 <Select>
                                                     <SelectTrigger className="bg-background">
-                                                        <SelectValue placeholder="Chọn roles" />
+                                                        <SelectValue placeholder="Chọn roles (có thể chọn nhiều)" />
                                                     </SelectTrigger>
                                                     <SelectContent>
+                                                        <SelectItem value="admin">Admin</SelectItem>
+                                                        <SelectItem value="bda">BDA</SelectItem>
                                                         <SelectItem value="teller">Teller</SelectItem>
                                                         <SelectItem value="branch_manager">Branch Manager</SelectItem>
                                                         <SelectItem value="risk_officer">Risk Officer</SelectItem>
                                                         <SelectItem value="senior_manager">Senior Manager</SelectItem>
-                                                        <SelectItem value="admin">Admin</SelectItem>
+                                                        <SelectItem value="viewer">Viewer</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             )}
                                         </div>
                                     </div>
 
+                                    {/* Option 2: User set động */}
+                                    <div className="flex items-start space-x-3">
+                                        <RadioGroupItem value="user_set" id="user-set-panel" className="mt-1" />
+                                        <div className="flex-1 space-y-2">
+                                            <Label htmlFor="user-set-panel" className="font-medium cursor-pointer">
+                                                Áp dụng cho User set động
+                                            </Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Chọn các dynamic role (user set) đã định nghĩa trước
+                                            </p>
+                                            {subjectType === "user_set" && (
+                                                <Select>
+                                                    <SelectTrigger className="bg-background">
+                                                        <SelectValue placeholder="Chọn user set (có thể chọn nhiều)" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="ptdl_staff">Nhân viên PTDL</SelectItem>
+                                                        <SelectItem value="senior_analysts">Senior Analysts</SelectItem>
+                                                        <SelectItem value="hcm_branch">Chi nhánh HCM</SelectItem>
+                                                        <SelectItem value="data_owners">Data Owners</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Option 3: User cụ thể */}
                                     <div className="flex items-start space-x-3">
                                         <RadioGroupItem value="user" id="user-panel" className="mt-1" />
                                         <div className="flex-1 space-y-2">
                                             <Label htmlFor="user-panel" className="font-medium cursor-pointer">
                                                 Áp dụng cho User cụ thể
                                             </Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Tuỳ chọn nâng cao. Khuyến nghị dùng ACL tab cho user đơn lẻ.
+                                            </p>
                                             {subjectType === "user" && (
                                                 <Select>
                                                     <SelectTrigger className="bg-background">
-                                                        <SelectValue placeholder="Chọn users" />
+                                                        <SelectValue placeholder="Chọn users (có thể chọn nhiều)" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="khoiln1">khoiln1 – Khoi Le</SelectItem>
+                                                        <SelectItem value="khoiln1">khoiln1 – Lê Nhật Khôi</SelectItem>
                                                         <SelectItem value="annv">annv – An Nguyen</SelectItem>
+                                                        <SelectItem value="minhtq">minhtq – Trần Quang Minh</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             )}
@@ -250,7 +300,12 @@ export function RuleDetailPanel({ open, onOpenChange, rule }: RuleDetailPanelPro
 
                         {/* ABAC Conditions */}
                         <div className="space-y-3 pt-4 border-t">
-                            <Label>Điều kiện ABAC (Builder)</Label>
+                            <div>
+                                <Label>Điều kiện ABAC (Builder) – Định nghĩa Resource Set và User Set</Label>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Thêm điều kiện để xác định resource set (tài nguyên nào) và user set (người dùng nào) được áp dụng rule này
+                                </p>
+                            </div>
 
                             {conditions.length > 0 && (
                                 <div className="space-y-2">
@@ -266,6 +321,7 @@ export function RuleDetailPanel({ open, onOpenChange, rule }: RuleDetailPanelPro
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="user">User</SelectItem>
+                                                        <SelectItem value="resource">Resource</SelectItem>
                                                         <SelectItem value="transaction">Transaction</SelectItem>
                                                         <SelectItem value="context">Context</SelectItem>
                                                     </SelectContent>
