@@ -36,7 +36,6 @@ const mockRuleGroups: RuleGroup[] = [
     },
 ];
 
-// Mock permissions data
 const mockPermissions: Record<string, Record<string, boolean>> = {
     "txn_under_10m_approve": { "Teller": true, "Branch Manager": true, "Admin": true },
     "txn_under_10m_read": { "Teller": true, "Branch Manager": true, "Risk Officer": true, "Admin": true },
@@ -92,11 +91,11 @@ export function PolicyMatrix() {
 
     return (
         <div className="space-y-4">
-            {/* Header & Filters */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            {/* Header */}
+            <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Bảng quyền giao dịch (Policy Editor)</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Quản lý quyền theo ma trận role × action</p>
+                    <h2 className="text-2xl font-bold tracking-tight">Bảng quyền giao dịch</h2>
+                    <p className="text-sm text-foreground/70 mt-1">Quản lý quyền theo ma trận role × action</p>
                 </div>
                 <Button onClick={openNewRule} className="shadow-lg shadow-primary/20">
                     <Plus className="h-4 w-4 mr-2" />
@@ -104,9 +103,10 @@ export function PolicyMatrix() {
                 </Button>
             </div>
 
+            {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
                 <Select value={selectedResource} onValueChange={setSelectedResource}>
-                    <SelectTrigger className="w-full sm:w-[200px] bg-background/50">
+                    <SelectTrigger className="w-full sm:w-[200px]">
                         <SelectValue placeholder="Filter resource" />
                     </SelectTrigger>
                     <SelectContent>
@@ -123,23 +123,23 @@ export function PolicyMatrix() {
                         placeholder="Tìm rule theo tên..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9 bg-background/50"
+                        className="pl-9"
                     />
                 </div>
             </div>
 
-            {/* Policy Matrix Table */}
+            {/* Matrix Table */}
             <div className="rounded-lg border bg-card overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
                             <tr className="border-b bg-muted/50">
-                                <th className="text-left p-4 font-semibold min-w-[300px] sticky left-0 bg-muted/50 z-10">
+                                <th className="text-left p-4 font-semibold text-foreground min-w-[300px] sticky left-0 bg-muted/50 z-10">
                                     Rule / Action
                                 </th>
                                 {mockRoleColumns.map((role) => (
-                                    <th key={role} className="text-center p-4 font-semibold min-w-[120px]">
-                                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
+                                    <th key={role} className="text-center p-4 font-semibold text-foreground min-w-[120px]">
+                                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
                                             {role}
                                         </div>
                                     </th>
@@ -149,7 +149,6 @@ export function PolicyMatrix() {
                         <tbody>
                             {ruleGroups.map((group) => (
                                 <>
-                                    {/* Group Header Row */}
                                     <tr key={group.id} className="border-b hover:bg-muted/30 transition-colors">
                                         <td className="p-4 sticky left-0 bg-card z-10">
                                             <div className="flex items-center gap-2">
@@ -167,7 +166,7 @@ export function PolicyMatrix() {
                                                 </Button>
                                                 <button
                                                     onClick={() => openRuleDetail(group)}
-                                                    className="font-medium hover:text-primary transition-colors text-left"
+                                                    className="font-semibold text-foreground hover:text-primary transition-colors text-left"
                                                 >
                                                     {group.name}
                                                 </button>
@@ -178,14 +177,13 @@ export function PolicyMatrix() {
                                         ))}
                                     </tr>
 
-                                    {/* Action Rows */}
                                     {group.expanded &&
                                         group.actions.map((action) => {
                                             const ruleId = `${group.id}_${action}`;
                                             return (
                                                 <tr key={ruleId} className="border-b hover:bg-muted/20 transition-colors">
                                                     <td className="p-4 pl-12 sticky left-0 bg-card z-10">
-                                                        <span className="text-sm text-muted-foreground font-mono">{action}</span>
+                                                        <span className="text-sm text-foreground/80 font-mono font-medium">{action}</span>
                                                     </td>
                                                     {mockRoleColumns.map((role) => (
                                                         <td key={role} className="p-4 text-center">
@@ -204,12 +202,11 @@ export function PolicyMatrix() {
                                 </>
                             ))}
 
-                            {/* Add New Rule Row */}
                             <tr className="hover:bg-muted/30 transition-colors">
                                 <td colSpan={mockRoleColumns.length + 1} className="p-4">
                                     <button
                                         onClick={openNewRule}
-                                        className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+                                        className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
                                     >
                                         <Plus className="h-4 w-4" />
                                         Thêm rule mới
@@ -221,7 +218,6 @@ export function PolicyMatrix() {
                 </div>
             </div>
 
-            {/* Rule Detail Panel */}
             <RuleDetailPanel open={isPanelOpen} onOpenChange={setIsPanelOpen} rule={selectedRule} />
         </div>
     );
