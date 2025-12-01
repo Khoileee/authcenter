@@ -44,6 +44,7 @@ export function DataTable<T extends { id: string | number }>({
                     <Table>
                         <TableHeader className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
                             <TableRow className="hover:bg-transparent border-b border-border/60">
+                                <TableHead className="h-11 font-semibold text-foreground/70 w-16">STT</TableHead>
                                 {columns.map((col, index) => (
                                     <TableHead key={index} className={`h-11 font-semibold text-foreground/70 ${col.className || ""}`}>
                                         {col.header}
@@ -53,8 +54,11 @@ export function DataTable<T extends { id: string | number }>({
                         </TableHeader>
                         <TableBody>
                             {paginatedData.length > 0 ? (
-                                paginatedData.map((item) => (
+                                paginatedData.map((item, idx) => (
                                     <TableRow key={item.id} className="hover:bg-muted/30 transition-colors border-b border-border/40 last:border-0">
+                                        <TableCell className="py-3 text-muted-foreground">
+                                            {(currentPage - 1) * pageSize + idx + 1}
+                                        </TableCell>
                                         {columns.map((col, index) => (
                                             <TableCell key={index} className={`py-3 ${col.className || ""}`}>
                                                 {col.cell
@@ -69,7 +73,7 @@ export function DataTable<T extends { id: string | number }>({
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={columns.length}
+                                        colSpan={columns.length + 1}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         Không có dữ liệu.
