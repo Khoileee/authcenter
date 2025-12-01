@@ -13,7 +13,7 @@ export default function Policies() {
           <Tabs defaultValue="acl" className="flex-1 flex flex-col min-h-0">
             <TabsList className="mb-4">
               <TabsTrigger value="acl">Quyền theo người dùng (ACL)</TabsTrigger>
-              <TabsTrigger value="rbac">Quyền theo vai trò & rule (Policy Editor)</TabsTrigger>
+              <TabsTrigger value="rbac">Quyền theo vai trò (RBAC & ABAC)</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: User ACL */}
