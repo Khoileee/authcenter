@@ -40,12 +40,15 @@ const columns: Column<typeof mockUsers[0]>[] = [
   {
     header: "Trạng thái",
     cell: (user) => (
-      <Badge
-        variant={user.status === "active" ? "default" : "secondary"}
-        className={user.status === "active" ? "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}
-      >
-        {user.status === "active" ? "Hoạt động" : "Ngừng hoạt động"}
-      </Badge>
+      user.status === "active" ? (
+        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
+          Hoạt động
+        </span>
+      ) : (
+        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200">
+          Ngừng hoạt động
+        </span>
+      )
     ),
   },
   {

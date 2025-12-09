@@ -10,7 +10,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ title }: AppHeaderProps) {
   return (
-    <header className="h-16 border-b border-border/40 bg-background/60 backdrop-blur-xl flex items-center justify-between px-6 z-10">
+    <header className="h-16 border-b border-border/40 bg-white backdrop-blur-xl flex items-center justify-between px-6 z-10">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="hover:bg-primary/10 hover:text-primary transition-colors" />
         <h1 className="text-xl font-bold text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">{title}</h1>

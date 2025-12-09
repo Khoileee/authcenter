@@ -25,7 +25,7 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar-background/95 backdrop-blur-xl">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-white backdrop-blur-xl">
       <SidebarHeader className="border-b border-sidebar-border/50 p-5 group-data-[collapsible=icon]:p-3 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center transition-all duration-300">
         <div className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0">
           <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">

@@ -251,9 +251,9 @@ export function UserACLTab() {
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">Trạng thái:</span>
-                            <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-200/50 font-medium">
+                            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
                                 {selectedUser.status}
-                            </Badge>
+                            </span>
                         </div>
                     </div>
                 </Card>
