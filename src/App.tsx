@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import UsersRoles from "./pages/UsersRoles";
 import ResourcesActions from "./pages/ResourcesActions";
+import PermissionProfiles from "./pages/PermissionProfiles";
 import Policies from "./pages/Policies";
 import PermissionCheck from "./pages/PermissionCheck";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/users-roles" element={<UsersRoles />} />
                 <Route path="/resources-actions" element={<ResourcesActions />} />
+                <Route path="/permission-profiles" element={<PermissionProfiles />} />
                 <Route path="/policies" element={<Policies />} />
                 <Route path="/permission-check" element={<PermissionCheck />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

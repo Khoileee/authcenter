@@ -19,7 +19,6 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
     schema: "",
     table: "",
     attributes: [],
-    actions: [],
   });
 
   const handleSubmit = () => {
@@ -37,7 +36,6 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
       schema: "",
       table: "",
       attributes: [],
-      actions: [],
     });
   };
 
@@ -77,7 +75,6 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
                 schema: "",
                 table: "",
                 attributes: [],
-                actions: [],
               });
             }}
           >

@@ -29,7 +29,6 @@ export interface ResourceFormData {
   schema: string;
   table: string;
   attributes: AttributeConfig[];
-  actions: ActionConfig[];
 }
 
 interface CreateResourceFormProps {
@@ -92,11 +91,6 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
         specialRole: "none",
       }));
       onChange({ attributes: initialAttributes });
-    }
-
-    // Load actions nếu chưa có
-    if (data.actions.length === 0) {
-      onChange({ actions: [...systemActions] });
     }
   };
 
@@ -332,56 +326,6 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
                             <SelectItem value="created_by_field">created_by_field</SelectItem>
                           </SelectContent>
                         </Select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* Bước 4 — Hành động áp dụng */}
-      {data.actions.length > 0 && (
-        <Card className="p-6">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">4. Hành động áp dụng cho tài nguyên</h3>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs max-w-xs">
-                    Danh sách các hành động đã được hệ thống khai báo sẵn cho tài nguyên này
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <div className="overflow-x-auto border rounded-lg">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="p-3 text-left font-medium">Action code</th>
-                    <th className="p-3 text-left font-medium">Tên hiển thị</th>
-                    <th className="p-3 text-left font-medium">Mô tả</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.actions.map((action) => (
-                    <tr key={action.code} className="border-t hover:bg-muted/30">
-                      <td className="p-3">
-                        <span className="font-mono text-xs text-primary">
-                          {action.code}
-                        </span>
-                      </td>
-                      <td className="p-3 font-medium">
-                        {action.name}
-                      </td>
-                      <td className="p-3 text-muted-foreground">
-                        {action.description}
                       </td>
                     </tr>
                   ))}
