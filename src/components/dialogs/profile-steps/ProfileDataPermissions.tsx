@@ -158,144 +158,148 @@ export function ProfileDataPermissions({ data, onChange }: ProfileDataPermission
                     </Select>
                   </div>
 
-                  {rule.resourceId && (
-                    <div>
-                      <Label htmlFor={`scope-${rule.id}`}>Phạm vi áp dụng</Label>
-                      <Select
-                        value={rule.applyScope}
-                        onValueChange={(val) => updateRule(rule.id, { applyScope: val as "all" | "conditions" })}
-                      >
-                        <SelectTrigger className="bg-background mt-2">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Toàn bộ tài nguyên</SelectItem>
-                          <SelectItem value="conditions">Tài nguyên phải thỏa mãn TẤT CẢ các điều kiện sau</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
+                  <div>
+                    <Label htmlFor={`scope-${rule.id}`}>Phạm vi áp dụng</Label>
+                    <Select
+                      value={rule.applyScope}
+                      onValueChange={(val) => updateRule(rule.id, { applyScope: val as "all" | "conditions" })}
+                    >
+                      <SelectTrigger className="bg-background mt-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toàn bộ tài nguyên</SelectItem>
+                        <SelectItem value="conditions">Tài nguyên phải thỏa mãn TẤT CẢ các điều kiện sau</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Điều kiện ABAC */}
-                {rule.applyScope === "conditions" && selectedResource && (
+                {rule.applyScope === "conditions" && (
                   <div className="mb-4">
                     <Label className="mb-2 block">Điều kiện ABAC</Label>
-                    {rule.conditions.length > 0 && (
-                      <div className="overflow-x-auto border rounded-lg mb-3">
-                        <table className="w-full text-sm">
-                          <thead className="bg-muted/50">
-                            <tr>
-                              <th className="p-2 text-left font-medium">Thuộc tính</th>
-                              <th className="p-2 text-left font-medium">Toán tử</th>
-                              <th className="p-2 text-left font-medium">Giá trị</th>
-                              <th className="p-2 text-center font-medium w-16">Xóa</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {rule.conditions.map((cond) => (
-                              <tr key={cond.id} className="border-t">
-                                <td className="p-2">
-                                  <Select
-                                    value={cond.attribute}
-                                    onValueChange={(val) =>
-                                      updateCondition(rule.id, cond.id, { attribute: val })
-                                    }
-                                  >
-                                    <SelectTrigger className="h-8 text-xs bg-background">
-                                      <SelectValue placeholder="Thuộc tính" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {selectedResource.attributes.map((attr) => (
-                                        <SelectItem key={attr} value={attr}>
-                                          {attr}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </td>
-                                <td className="p-2">
-                                  <Select
-                                    value={cond.operator}
-                                    onValueChange={(val) =>
-                                      updateCondition(rule.id, cond.id, { operator: val })
-                                    }
-                                  >
-                                    <SelectTrigger className="h-8 text-xs bg-background">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="equals">bằng</SelectItem>
-                                      <SelectItem value="not_equals">≠</SelectItem>
-                                      <SelectItem value="in">IN</SelectItem>
-                                      <SelectItem value="greater">&gt;</SelectItem>
-                                      <SelectItem value="less">&lt;</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </td>
-                                <td className="p-2">
-                                  <Input
-                                    value={cond.value}
-                                    onChange={(e) =>
-                                      updateCondition(rule.id, cond.id, { value: e.target.value })
-                                    }
-                                    placeholder="Giá trị"
-                                    className="h-8 text-xs"
-                                  />
-                                </td>
-                                <td className="p-2 text-center">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    onClick={() => removeCondition(rule.id, cond.id)}
-                                    title="Xóa"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                    {selectedResource ? (
+                      <>
+                        {rule.conditions.length > 0 && (
+                          <div className="overflow-x-auto border rounded-lg mb-3">
+                            <table className="w-full text-sm">
+                              <thead className="bg-muted/50">
+                                <tr>
+                                  <th className="p-2 text-left font-medium">Thuộc tính</th>
+                                  <th className="p-2 text-left font-medium">Toán tử</th>
+                                  <th className="p-2 text-left font-medium">Giá trị</th>
+                                  <th className="p-2 text-center font-medium w-16">Xóa</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {rule.conditions.map((cond) => (
+                                  <tr key={cond.id} className="border-t">
+                                    <td className="p-2">
+                                      <Select
+                                        value={cond.attribute}
+                                        onValueChange={(val) =>
+                                          updateCondition(rule.id, cond.id, { attribute: val })
+                                        }
+                                      >
+                                        <SelectTrigger className="h-8 text-xs bg-background">
+                                          <SelectValue placeholder="Thuộc tính" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {selectedResource.attributes.map((attr) => (
+                                            <SelectItem key={attr} value={attr}>
+                                              {attr}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </td>
+                                    <td className="p-2">
+                                      <Select
+                                        value={cond.operator}
+                                        onValueChange={(val) =>
+                                          updateCondition(rule.id, cond.id, { operator: val })
+                                        }
+                                      >
+                                        <SelectTrigger className="h-8 text-xs bg-background">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="equals">bằng</SelectItem>
+                                          <SelectItem value="not_equals">≠</SelectItem>
+                                          <SelectItem value="in">IN</SelectItem>
+                                          <SelectItem value="greater">&gt;</SelectItem>
+                                          <SelectItem value="less">&lt;</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </td>
+                                    <td className="p-2">
+                                      <Input
+                                        value={cond.value}
+                                        onChange={(e) =>
+                                          updateCondition(rule.id, cond.id, { value: e.target.value })
+                                        }
+                                        placeholder="Giá trị"
+                                        className="h-8 text-xs"
+                                      />
+                                    </td>
+                                    <td className="p-2 text-center">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                        onClick={() => removeCondition(rule.id, cond.id)}
+                                        title="Xóa"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => addConditionToRule(rule.id)}
+                          className="gap-2"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Thêm điều kiện
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-lg">
+                        Vui lòng chọn loại tài nguyên trước để cấu hình điều kiện ABAC
                       </div>
                     )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addConditionToRule(rule.id)}
-                      className="gap-2"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Thêm điều kiện
-                    </Button>
                   </div>
                 )}
 
                 {/* Hành động */}
-                {rule.resourceId && (
-                  <div>
-                    <Label className="mb-2 block">Hành động</Label>
-                    <div className="flex gap-4">
-                      {mockActions.map((action) => (
-                        <div key={action.code} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`${rule.id}-${action.code}`}
-                            checked={rule.actions.includes(action.code)}
-                            onCheckedChange={() => toggleAction(rule.id, action.code)}
-                          />
-                          <Label
-                            htmlFor={`${rule.id}-${action.code}`}
-                            className="text-sm font-normal cursor-pointer"
-                          >
-                            {action.name}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
+                <div>
+                  <Label className="mb-2 block">Hành động</Label>
+                  <div className="flex gap-4">
+                    {mockActions.map((action) => (
+                      <div key={action.code} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`${rule.id}-${action.code}`}
+                          checked={rule.actions.includes(action.code)}
+                          onCheckedChange={() => toggleAction(rule.id, action.code)}
+                        />
+                        <Label
+                          htmlFor={`${rule.id}-${action.code}`}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {action.name}
+                        </Label>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
               </Card>
             );
           })}

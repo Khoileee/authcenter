@@ -3,7 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
+import { useState, KeyboardEvent } from "react";
 
 interface CreateUserPanelProps {
     open: boolean;
@@ -20,7 +22,32 @@ export function CreateUserPanel({ open, onOpenChange }: CreateUserPanelProps) {
         position: "",
         status: "active",
         roles: [] as string[],
+        ipAddresses: [] as string[],
     });
+
+    const [ipInput, setIpInput] = useState("");
+
+    const handleAddIp = () => {
+        const trimmedIp = ipInput.trim();
+        if (trimmedIp && !formData.ipAddresses.includes(trimmedIp)) {
+            setFormData({ ...formData, ipAddresses: [...formData.ipAddresses, trimmedIp] });
+            setIpInput("");
+        }
+    };
+
+    const handleIpKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleAddIp();
+        }
+    };
+
+    const removeIp = (ipToRemove: string) => {
+        setFormData({
+            ...formData,
+            ipAddresses: formData.ipAddresses.filter((ip) => ip !== ipToRemove),
+        });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -157,6 +184,41 @@ export function CreateUserPanel({ open, onOpenChange }: CreateUserPanelProps) {
                                 </SelectContent>
                             </Select>
                         </div>
+                    </div>
+
+                    {/* IP Address */}
+                    <div className="space-y-2">
+                        <Label htmlFor="ipAddress">
+                            IP Address <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                            id="ipAddress"
+                            placeholder="Nhập IP và nhấn Enter (ví dụ: 192.168.1.1)"
+                            value={ipInput}
+                            onChange={(e) => setIpInput(e.target.value)}
+                            onKeyDown={handleIpKeyDown}
+                            className="bg-background"
+                        />
+                        {formData.ipAddresses.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {formData.ipAddresses.map((ip) => (
+                                    <Badge
+                                        key={ip}
+                                        variant="secondary"
+                                        className="gap-1 pr-1 font-normal"
+                                    >
+                                        {ip}
+                                        <button
+                                            type="button"
+                                            onClick={() => removeIp(ip)}
+                                            className="ml-1 rounded-sm hover:bg-destructive/20 hover:text-destructive"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </Badge>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <SheetFooter className="gap-2">

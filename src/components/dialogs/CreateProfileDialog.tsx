@@ -63,7 +63,16 @@ export function CreateProfileDialog({ open, onOpenChange }: CreateProfileDialogP
     status: "active",
     conditions: [],
     systemPermissions: [],
-    dataPermissions: [],
+    dataPermissions: [
+      {
+        id: `rule-${Date.now()}`,
+        resourceId: "",
+        resourceName: "",
+        applyScope: "all",
+        conditions: [],
+        actions: [],
+      },
+    ],
   });
 
   const handleSubmit = () => {
@@ -80,7 +89,16 @@ export function CreateProfileDialog({ open, onOpenChange }: CreateProfileDialogP
       status: "active",
       conditions: [],
       systemPermissions: [],
-      dataPermissions: [],
+      dataPermissions: [
+        {
+          id: `rule-${Date.now()}`,
+          resourceId: "",
+          resourceName: "",
+          applyScope: "all",
+          conditions: [],
+          actions: [],
+        },
+      ],
     });
   };
 
@@ -137,7 +155,16 @@ export function CreateProfileDialog({ open, onOpenChange }: CreateProfileDialogP
                 status: "active",
                 conditions: [],
                 systemPermissions: [],
-                dataPermissions: [],
+                dataPermissions: [
+                  {
+                    id: `rule-${Date.now()}`,
+                    resourceId: "",
+                    resourceName: "",
+                    applyScope: "all",
+                    conditions: [],
+                    actions: [],
+                  },
+                ],
               });
             }}
           >
