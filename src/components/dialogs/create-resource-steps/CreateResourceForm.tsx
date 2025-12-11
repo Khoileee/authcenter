@@ -13,7 +13,6 @@ export interface AttributeConfig {
   displayName: string;
   dataType: string;
   useForPermission: boolean;
-  specialRole: string;
 }
 
 export interface ActionConfig {
@@ -88,7 +87,6 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
         displayName: col.name.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
         dataType: col.type,
         useForPermission: false,
-        specialRole: "none",
       }));
       onChange({ attributes: initialAttributes });
     }
@@ -263,7 +261,6 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
                     <th className="p-3 text-left font-medium">Kiểu dữ liệu</th>
                     <th className="p-3 text-left font-medium">Tên hiển thị</th>
                     <th className="p-3 text-center font-medium">Dùng cho<br/>phân quyền?</th>
-                    <th className="p-3 text-left font-medium">Vai trò đặc biệt</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -308,24 +305,6 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
                             updateAttribute(attr.id, { useForPermission: !!checked })
                           }
                         />
-                      </td>
-
-                      <td className="p-3">
-                        <Select
-                          value={attr.specialRole}
-                          onValueChange={(value) => updateAttribute(attr.id, { specialRole: value })}
-                          disabled={!attr.useForPermission}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">(none)</SelectItem>
-                            <SelectItem value="owner_unit_field">owner_unit_field</SelectItem>
-                            <SelectItem value="responsible_unit_field">responsible_unit_field</SelectItem>
-                            <SelectItem value="created_by_field">created_by_field</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </td>
                     </tr>
                   ))}

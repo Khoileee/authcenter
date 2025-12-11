@@ -2,10 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Eye, Pencil, Filter } from "lucide-react";
+import { Search, Plus, Eye, Pencil, Filter, ShieldCheck } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { CreateUserPanel } from "@/components/dialogs/CreateUserDialog";
+import { UserPermissionDialog } from "@/components/dialogs/UserPermissionDialog";
 import { useState } from "react";
 
 const mockUsers = [
@@ -22,53 +23,69 @@ const mockUsers = [
   { id: 11, name: "Lý Thị Hà", username: "halt", email: "halt@company.com", unit: "Marketing", roles: ["User"], status: "active" },
 ];
 
-const columns: Column<typeof mockUsers[0]>[] = [
-  { header: "Họ tên", accessorKey: "name", className: "font-medium" },
-  { header: "Username", accessorKey: "username" },
-  { header: "Email", accessorKey: "email" },
-  { header: "Đơn vị", accessorKey: "unit" },
-  {
-    header: "Vai trò",
-    cell: (user) => (
-      <div className="flex gap-1 flex-wrap">
-        {user.roles.map((role) => (
-          <Badge key={role} variant="secondary" className="font-normal">{role}</Badge>
-        ))}
-      </div>
-    ),
-  },
-  {
-    header: "Trạng thái",
-    cell: (user) => (
-      user.status === "active" ? (
-        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
-          Hoạt động
-        </span>
-      ) : (
-        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200">
-          Ngừng hoạt động
-        </span>
-      )
-    ),
-  },
-  {
-    header: "Hành động",
-    className: "text-right",
-    cell: () => (
-      <div className="flex justify-end gap-2">
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
-          <Eye className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
-          <Pencil className="h-4 w-4" />
-        </Button>
-      </div>
-    ),
-  },
-];
-
 export function UsersTab() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
+
+  const handleOpenPermissionDialog = (user: typeof mockUsers[0]) => {
+    setSelectedUser(user);
+    setIsPermissionDialogOpen(true);
+  };
+
+  const columns: Column<typeof mockUsers[0]>[] = [
+    { header: "Họ tên", accessorKey: "name", className: "font-medium" },
+    { header: "Username", accessorKey: "username" },
+    { header: "Email", accessorKey: "email" },
+    { header: "Đơn vị", accessorKey: "unit" },
+    {
+      header: "Vai trò",
+      cell: (user) => (
+        <div className="flex gap-1 flex-wrap">
+          {user.roles.map((role) => (
+            <Badge key={role} variant="secondary" className="font-normal">{role}</Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      header: "Trạng thái",
+      cell: (user) => (
+        user.status === "active" ? (
+          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
+            Hoạt động
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200">
+            Ngừng hoạt động
+          </span>
+        )
+      ),
+    },
+    {
+      header: "Hành động",
+      className: "text-right",
+      cell: (user) => (
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
+            <Eye className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-600/10"
+            onClick={() => handleOpenPermissionDialog(user)}
+            title="Phân quyền"
+          >
+            <ShieldCheck className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -124,6 +141,11 @@ export function UsersTab() {
       </Card>
 
       <CreateUserPanel open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
+      <UserPermissionDialog 
+        open={isPermissionDialogOpen} 
+        onOpenChange={setIsPermissionDialogOpen} 
+        user={selectedUser}
+      />
     </>
   );
 }

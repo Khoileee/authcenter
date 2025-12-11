@@ -65,20 +65,6 @@ const columns: Column<typeof mockResources[0]>[] = [
     className: "font-medium"
   },
   {
-    header: "Loại tài nguyên",
-    accessorKey: "type",
-    cell: (resource) => (
-      <Badge variant="secondary" className="font-normal">
-        {resource.type}
-      </Badge>
-    ),
-  },
-  { 
-    header: "Nhóm tính năng", 
-    accessorKey: "featureGroup", 
-    className: "text-muted-foreground"
-  },
-  {
     header: "Trạng thái",
     accessorKey: "status",
     cell: (resource) => (

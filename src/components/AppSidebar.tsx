@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { title: "Người dùng & Vai trò", url: "/users-roles", icon: Users },
-  { title: "Tài nguyên & Hành động", url: "/resources-actions", icon: Database },
+  { title: "Tài nguyên", url: "/resources-actions", icon: Database },
   { title: "Profile quyền", url: "/permission-profiles", icon: UserCog },
   { title: "Chính sách phân quyền", url: "/policies", icon: FileText },
   { title: "Kiểm tra quyền", url: "/permission-check", icon: CheckCircle },
