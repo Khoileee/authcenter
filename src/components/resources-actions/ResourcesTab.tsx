@@ -8,42 +8,31 @@ import { SettingsButton, EditButton, DeleteButton, ActionButtonsContainer } from
 import { useState } from "react";
 
 const mockResources = [
-  { 
-    id: 1, 
-    system: "Ticket System",
-    code: "feature.ticket.create", 
-    name: "Create Ticket", 
-    type: "Business Entity", 
-    featureGroup: "Ticket System",
-    status: "active"
-  },
-  { 
-    id: 2, 
-    system: "Data Quality",
-    code: "menu.data_quality", 
-    name: "Data Quality", 
-    type: "UI Menu", 
-    featureGroup: "Data Management",
-    status: "active"
-  },
-  { 
-    id: 3, 
-    system: "Data Quality",
-    code: "api.dq.upload_rule", 
-    name: "Upload Rule API", 
-    type: "API Endpoint", 
-    featureGroup: "Data Quality",
-    status: "active"
-  },
-  { 
-    id: 4, 
-    system: "Administration",
-    code: "menu.user_management", 
-    name: "User Management", 
-    type: "UI Menu", 
-    featureGroup: "Administration",
-    status: "inactive"
-  },
+  { id: 1, system: "Ticket System", code: "feature.ticket.create", name: "Create Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
+  { id: 2, system: "Ticket System", code: "feature.ticket.view", name: "View Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
+  { id: 3, system: "Ticket System", code: "feature.ticket.assign", name: "Assign Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
+  { id: 4, system: "Data Quality", code: "menu.data_quality", name: "Data Quality Menu", type: "UI Menu", featureGroup: "Data Management", status: "active" },
+  { id: 5, system: "Data Quality", code: "api.dq.upload_rule", name: "Upload Rule API", type: "API Endpoint", featureGroup: "Data Quality", status: "active" },
+  { id: 6, system: "Data Quality", code: "api.dq.execute_rule", name: "Execute Rule API", type: "API Endpoint", featureGroup: "Data Quality", status: "active" },
+  { id: 7, system: "Data Quality", code: "feature.dq.manage_rules", name: "Manage DQ Rules", type: "Business Entity", featureGroup: "Data Quality", status: "active" },
+  { id: 8, system: "Data Quality", code: "feature.dq.view_reports", name: "View DQ Reports", type: "Business Entity", featureGroup: "Data Quality", status: "active" },
+  { id: 9, system: "Administration", code: "menu.user_management", name: "User Management", type: "UI Menu", featureGroup: "Administration", status: "active" },
+  { id: 10, system: "Administration", code: "menu.role_management", name: "Role Management", type: "UI Menu", featureGroup: "Administration", status: "active" },
+  { id: 11, system: "Administration", code: "menu.audit_log", name: "Audit Log", type: "UI Menu", featureGroup: "Administration", status: "active" },
+  { id: 12, system: "Administration", code: "api.admin.export_users", name: "Export Users API", type: "API Endpoint", featureGroup: "Administration", status: "active" },
+  { id: 13, system: "Analytics", code: "menu.dashboard", name: "Analytics Dashboard", type: "UI Menu", featureGroup: "Analytics", status: "active" },
+  { id: 14, system: "Analytics", code: "menu.reports", name: "Reports Menu", type: "UI Menu", featureGroup: "Analytics", status: "active" },
+  { id: 15, system: "Analytics", code: "feature.report.create", name: "Create Report", type: "Business Entity", featureGroup: "Analytics", status: "active" },
+  { id: 16, system: "Analytics", code: "feature.report.export", name: "Export Report", type: "Business Entity", featureGroup: "Analytics", status: "active" },
+  { id: 17, system: "Workflow", code: "menu.workflow", name: "Workflow Menu", type: "UI Menu", featureGroup: "Workflow", status: "active" },
+  { id: 18, system: "Workflow", code: "feature.workflow.create", name: "Create Workflow", type: "Business Entity", featureGroup: "Workflow", status: "active" },
+  { id: 19, system: "Workflow", code: "feature.workflow.approve", name: "Approve Workflow", type: "Business Entity", featureGroup: "Workflow", status: "active" },
+  { id: 20, system: "Notification", code: "api.notification.send", name: "Send Notification API", type: "API Endpoint", featureGroup: "Notification", status: "active" },
+  { id: 21, system: "Notification", code: "menu.notification_settings", name: "Notification Settings", type: "UI Menu", featureGroup: "Notification", status: "active" },
+  { id: 22, system: "File Storage", code: "api.storage.upload", name: "Upload File API", type: "API Endpoint", featureGroup: "File Storage", status: "active" },
+  { id: 23, system: "File Storage", code: "api.storage.download", name: "Download File API", type: "API Endpoint", featureGroup: "File Storage", status: "active" },
+  { id: 24, system: "File Storage", code: "feature.storage.manage", name: "Manage Files", type: "Business Entity", featureGroup: "File Storage", status: "inactive" },
+  { id: 25, system: "Integration", code: "api.integration.sync", name: "Sync Data API", type: "API Endpoint", featureGroup: "Integration", status: "active" },
 ];
 
 export function ResourcesTab() {

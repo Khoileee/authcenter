@@ -11,30 +11,24 @@ import { ViewButton, EditButton, CopyButton, DeleteButton, ActionButtonsContaine
 
 // Mock data
 const mockProfiles = [
-  {
-    id: 1,
-    name: "BDA - TTPTDL",
-    appliedFor: "Đơn vị = TTPTDL; Vai trò = BDA",
-    systemPermCount: 12,
-    dataPermCount: 8,
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Admin Full Access",
-    appliedFor: "Vai trò = Admin",
-    systemPermCount: 45,
-    dataPermCount: 20,
-    status: "active",
-  },
-  {
-    id: 3,
-    name: "DQ Viewer",
-    appliedFor: "Đơn vị = TTPTDL; Vai trò = Viewer",
-    systemPermCount: 5,
-    dataPermCount: 3,
-    status: "inactive",
-  },
+  { id: 1, name: "BDA - TTPTDL", appliedFor: "Đơn vị = TTPTDL; Vai trò = BDA", systemPermCount: 12, dataPermCount: 8, status: "active" },
+  { id: 2, name: "Admin Full Access", appliedFor: "Vai trò = Admin", systemPermCount: 45, dataPermCount: 20, status: "active" },
+  { id: 3, name: "DQ Viewer", appliedFor: "Đơn vị = TTPTDL; Vai trò = Viewer", systemPermCount: 5, dataPermCount: 3, status: "inactive" },
+  { id: 4, name: "Data Engineer Profile", appliedFor: "Vai trò = Data Engineer", systemPermCount: 18, dataPermCount: 15, status: "active" },
+  { id: 5, name: "IT Support Standard", appliedFor: "Đơn vị = IT Department; Vai trò = Support", systemPermCount: 22, dataPermCount: 5, status: "active" },
+  { id: 6, name: "Finance Read Only", appliedFor: "Đơn vị = Finance", systemPermCount: 8, dataPermCount: 12, status: "active" },
+  { id: 7, name: "HR Manager Profile", appliedFor: "Vai trò = HR Manager", systemPermCount: 15, dataPermCount: 10, status: "active" },
+  { id: 8, name: "Developer Standard", appliedFor: "Vai trò = Developer", systemPermCount: 20, dataPermCount: 8, status: "active" },
+  { id: 9, name: "Security Auditor", appliedFor: "Vai trò = Auditor", systemPermCount: 35, dataPermCount: 25, status: "active" },
+  { id: 10, name: "Marketing Team", appliedFor: "Đơn vị = Marketing", systemPermCount: 10, dataPermCount: 5, status: "active" },
+  { id: 11, name: "Sales Representative", appliedFor: "Vai trò = Sales Rep", systemPermCount: 12, dataPermCount: 8, status: "active" },
+  { id: 12, name: "Customer Service", appliedFor: "Đơn vị = Customer Service", systemPermCount: 15, dataPermCount: 6, status: "active" },
+  { id: 13, name: "Operations Manager", appliedFor: "Vai trò = Ops Manager", systemPermCount: 25, dataPermCount: 12, status: "active" },
+  { id: 14, name: "Legal Compliance", appliedFor: "Đơn vị = Legal", systemPermCount: 18, dataPermCount: 15, status: "active" },
+  { id: 15, name: "Research Team", appliedFor: "Đơn vị = Research", systemPermCount: 14, dataPermCount: 20, status: "inactive" },
+  { id: 16, name: "DevOps Engineer", appliedFor: "Vai trò = DevOps", systemPermCount: 30, dataPermCount: 10, status: "active" },
+  { id: 17, name: "BI Analyst Profile", appliedFor: "Vai trò = BI Analyst", systemPermCount: 16, dataPermCount: 18, status: "active" },
+  { id: 18, name: "Tech Lead Profile", appliedFor: "Vai trò = Tech Lead", systemPermCount: 28, dataPermCount: 12, status: "active" },
 ];
 
 export default function PermissionProfiles() {
