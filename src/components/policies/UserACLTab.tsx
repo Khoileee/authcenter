@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, ChevronDown, ChevronRight, Info } from "lucide-react";
+import { Search, ChevronDown, ChevronRight, Info, RotateCcw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 
@@ -214,21 +214,28 @@ export function UserACLTab() {
             </div>
 
             {/* Search User */}
-            <Card className="p-4">
-                <div className="flex gap-3">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Tìm user theo username..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                            className="pl-9"
-                        />
-                    </div>
-                    <Button onClick={handleSearch}>Tìm kiếm</Button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-4 bg-card/50 border border-border/50 rounded-xl">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Tìm user theo username..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        className="pl-9 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all shadow-sm hover:bg-background/80"
+                    />
                 </div>
-            </Card>
+                <div className="flex gap-2">
+                    <Button onClick={handleSearch} className="gap-2">
+                        <Search className="h-4 w-4" />
+                        Tìm kiếm
+                    </Button>
+                    <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedUser(null); }} className="gap-2">
+                        <RotateCcw className="h-4 w-4" />
+                        Làm mới
+                    </Button>
+                </div>
+            </div>
 
             {/* User Info Card */}
             {selectedUser && (

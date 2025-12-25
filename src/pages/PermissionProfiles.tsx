@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
-import { SearchBar } from "@/components/common/SearchBar";
 import { DataTable } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
-import { Plus, Eye, Edit, Copy, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CreateProfileDialog } from "@/components/dialogs/CreateProfileDialog";
+import { SearchFilter } from "@/components/common/SearchFilter";
+import { ViewButton, EditButton, CopyButton, DeleteButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
 
 // Mock data
 const mockProfiles = [
@@ -43,7 +44,14 @@ export default function PermissionProfiles() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const columns: { header: string; accessor: keyof typeof mockProfiles[0]; render?: (value: any, row: typeof mockProfiles[0]) => React.ReactNode; }[] = [
+  const handleReset = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setUnitFilter("all");
+    setRoleFilter("all");
+  };
+
+  const columns: { header: string; accessor: keyof typeof mockProfiles[0]; className?: string; render?: (value: any, row: typeof mockProfiles[0]) => React.ReactNode; }[] = [
     {
       header: "Tên profile",
       accessor: "name",
@@ -90,41 +98,14 @@ export default function PermissionProfiles() {
     {
       header: "Hành động",
       accessor: "id",
+      className: "text-center",
       render: (value: number) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => console.log("View", value)}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => console.log("Edit", value)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => console.log("Clone", value)}
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive"
-            onClick={() => console.log("Delete", value)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
+        <ActionButtonsContainer>
+          <ViewButton onClick={() => console.log("View", value)} />
+          <EditButton onClick={() => console.log("Edit", value)} />
+          <CopyButton onClick={() => console.log("Clone", value)} />
+          <DeleteButton onClick={() => console.log("Delete", value)} />
+        </ActionButtonsContainer>
       ),
     },
   ];
@@ -150,15 +131,13 @@ export default function PermissionProfiles() {
           </div>
 
           {/* Filters */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1">
-              <SearchBar
-                value={searchTerm}
-                onChange={setSearchTerm}
-                placeholder="Tìm theo tên, mô tả..."
-              />
-            </div>
-
+          <SearchFilter
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            onSearch={() => console.log("Search:", searchTerm)}
+            onReset={handleReset}
+            placeholder="Tìm theo tên, mô tả..."
+          >
             <Select value={unitFilter} onValueChange={setUnitFilter}>
               <SelectTrigger className="w-48 bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
                 <SelectValue placeholder="Đơn vị áp dụng" />
@@ -193,10 +172,10 @@ export default function PermissionProfiles() {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </SearchFilter>
 
           {/* Table */}
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 mt-6">
             <DataTable columns={columns} data={mockProfiles} />
           </div>
 

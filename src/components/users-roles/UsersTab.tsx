@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Eye, Pencil, Filter, ShieldCheck } from "lucide-react";
+import { Plus, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { CreateUserPanel } from "@/components/dialogs/CreateUserDialog";
 import { UserPermissionDialog } from "@/components/dialogs/UserPermissionDialog";
+import { SearchFilter } from "@/components/common/SearchFilter";
+import { ViewButton, EditButton, PermissionButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
 import { useState } from "react";
 
 const mockUsers = [
@@ -27,10 +28,19 @@ export function UsersTab() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [unitFilter, setUnitFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const handleOpenPermissionDialog = (user: typeof mockUsers[0]) => {
     setSelectedUser(user);
     setIsPermissionDialogOpen(true);
+  };
+
+  const handleReset = () => {
+    setSearchValue("");
+    setUnitFilter("all");
+    setStatusFilter("all");
   };
 
   const columns: Column<typeof mockUsers[0]>[] = [
@@ -64,25 +74,13 @@ export function UsersTab() {
     },
     {
       header: "Hành động",
-      className: "text-right",
+      className: "text-center",
       cell: (user) => (
-        <div className="flex justify-end gap-2">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10">
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-600/10"
-            onClick={() => handleOpenPermissionDialog(user)}
-            title="Phân quyền"
-          >
-            <ShieldCheck className="h-4 w-4" />
-          </Button>
-        </div>
+        <ActionButtonsContainer>
+          <ViewButton onClick={() => console.log("View", user.id)} />
+          <EditButton onClick={() => console.log("Edit", user.id)} />
+          <PermissionButton onClick={() => handleOpenPermissionDialog(user)} />
+        </ActionButtonsContainer>
       ),
     },
   ];
@@ -101,38 +99,38 @@ export function UsersTab() {
           </Button>
         </CardHeader>
         <CardContent className="p-0 flex-1 flex flex-col min-h-0 space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4 p-0 bg-transparent">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Tìm theo tên, username hoặc email..." className="pl-9 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all shadow-sm hover:bg-background/80" />
-            </div>
-            <div className="flex gap-2">
-              <Select>
-                <SelectTrigger className="w-[180px] bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-3.5 w-3.5 text-muted-foreground" />
-                    <SelectValue placeholder="Đơn vị" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả đơn vị</SelectItem>
-                  <SelectItem value="it">IT Department</SelectItem>
-                  <SelectItem value="hr">HR Department</SelectItem>
-                  <SelectItem value="data">Data Team</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select>
-                <SelectTrigger className="w-[180px] bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
-                  <SelectValue placeholder="Trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                  <SelectItem value="active">Hoạt động</SelectItem>
-                  <SelectItem value="inactive">Ngừng hoạt động</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <SearchFilter
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+            onSearch={() => console.log("Search:", searchValue)}
+            onReset={handleReset}
+            placeholder="Tìm theo tên, username hoặc email..."
+          >
+            <Select value={unitFilter} onValueChange={setUnitFilter}>
+              <SelectTrigger className="w-[180px] bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+                  <SelectValue placeholder="Đơn vị" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả đơn vị</SelectItem>
+                <SelectItem value="it">IT Department</SelectItem>
+                <SelectItem value="hr">HR Department</SelectItem>
+                <SelectItem value="data">Data Team</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px] bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
+                <SelectValue placeholder="Trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                <SelectItem value="active">Hoạt động</SelectItem>
+                <SelectItem value="inactive">Ngừng hoạt động</SelectItem>
+              </SelectContent>
+            </Select>
+          </SearchFilter>
 
           <div className="flex-1 min-h-0">
             <DataTable data={mockUsers} columns={columns} pageSize={8} />
