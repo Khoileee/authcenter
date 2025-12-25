@@ -4,8 +4,13 @@ import { Plus } from "lucide-react";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { CreateResourcePanel } from "@/components/dialogs/CreateResourceDialog";
 import { SearchFilter } from "@/components/common/SearchFilter";
-import { SettingsButton, EditButton, DeleteButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewButton, EditButton, DeleteButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewDetailPanel } from "@/components/common/ViewDetailPanel";
+import { EditFormPanel, EditFormField } from "@/components/common/EditFormPanel";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const mockResources = [
   { id: 1, system: "Ticket System", code: "feature.ticket.create", name: "Create Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
@@ -36,12 +41,73 @@ const mockResources = [
 ];
 
 export function ResourcesTab() {
+  const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<typeof mockResources[0] | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: "", code: "", system: "", type: "", featureGroup: "" });
   const [searchValue, setSearchValue] = useState("");
+
+  const handleView = (resource: typeof mockResources[0]) => {
+    setSelectedResource(resource);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleEdit = (resource: typeof mockResources[0]) => {
+    setSelectedResource(resource);
+    setEditFormData({ 
+      name: resource.name, 
+      code: resource.code, 
+      system: resource.system, 
+      type: resource.type, 
+      featureGroup: resource.featureGroup 
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (resource: typeof mockResources[0]) => {
+    setSelectedResource(resource);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    toast({ title: "Đã xóa tài nguyên", description: `Tài nguyên "${selectedResource?.name}" đã được xóa thành công.` });
+    setIsDeleteDialogOpen(false);
+    setSelectedResource(null);
+  };
+
+  const handleSaveEdit = () => {
+    toast({ title: "Đã cập nhật", description: `Tài nguyên "${editFormData.name}" đã được cập nhật.` });
+    setIsEditDialogOpen(false);
+    setSelectedResource(null);
+  };
 
   const handleReset = () => {
     setSearchValue("");
   };
+
+  const editFields: EditFormField[] = [
+    { name: "code", label: "Mã tài nguyên", type: "text", value: editFormData.code, required: true, disabled: true },
+    { name: "name", label: "Tên hiển thị", type: "text", value: editFormData.name, required: true },
+    { name: "system", label: "Hệ thống", type: "select", value: editFormData.system, required: true, options: [
+      { value: "Ticket System", label: "Ticket System" },
+      { value: "Data Quality", label: "Data Quality" },
+      { value: "Administration", label: "Administration" },
+      { value: "Analytics", label: "Analytics" },
+      { value: "Workflow", label: "Workflow" },
+      { value: "Notification", label: "Notification" },
+      { value: "File Storage", label: "File Storage" },
+      { value: "Integration", label: "Integration" },
+    ]},
+    { name: "type", label: "Loại", type: "select", value: editFormData.type, required: true, options: [
+      { value: "Business Entity", label: "Business Entity" },
+      { value: "UI Menu", label: "UI Menu" },
+      { value: "API Endpoint", label: "API Endpoint" },
+    ]},
+    { name: "featureGroup", label: "Nhóm tính năng", type: "text", value: editFormData.featureGroup },
+  ];
 
   const columns: Column<typeof mockResources[0]>[] = [
     { 
@@ -81,9 +147,9 @@ export function ResourcesTab() {
       className: "text-center",
       cell: (resource) => (
         <ActionButtonsContainer>
-          <SettingsButton onClick={() => console.log("Settings", resource.id)} />
-          <EditButton onClick={() => console.log("Edit", resource.id)} />
-          <DeleteButton onClick={() => console.log("Delete", resource.id)} />
+          <ViewButton onClick={() => handleView(resource)} />
+          <EditButton onClick={() => handleEdit(resource)} />
+          <DeleteButton onClick={() => handleDelete(resource)} />
         </ActionButtonsContainer>
       ),
     },
@@ -118,6 +184,44 @@ export function ResourcesTab() {
       </Card>
 
       <CreateResourcePanel open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
+
+      {/* View Detail Panel */}
+      <ViewDetailPanel
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+        title={selectedResource?.name || ""}
+        description="Thông tin chi tiết tài nguyên"
+        badges={selectedResource ? [{ label: selectedResource.status === "active" ? "Active" : "Inactive", variant: selectedResource.status === "active" ? "success" : "secondary" }] : []}
+        fields={selectedResource ? [
+          { label: "Hệ thống", value: selectedResource.system },
+          { label: "Mã tài nguyên", value: <code className="font-mono text-sm text-primary">{selectedResource.code}</code> },
+          { label: "Tên hiển thị", value: selectedResource.name },
+          { label: "Loại", value: <Badge variant="outline">{selectedResource.type}</Badge> },
+          { label: "Nhóm tính năng", value: selectedResource.featureGroup },
+          { label: "Trạng thái", value: selectedResource.status === "active" ? "Active" : "Inactive" },
+        ] : []}
+      />
+
+      {/* Edit Panel */}
+      <EditFormPanel
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        title="Chỉnh sửa tài nguyên"
+        description="Cập nhật thông tin tài nguyên trong hệ thống"
+        fields={editFields}
+        onFieldChange={(name, value) => setEditFormData(prev => ({ ...prev, [name]: value }))}
+        onSave={handleSaveEdit}
+      />
+
+      {/* Delete Confirm Dialog */}
+      <DeleteConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Xóa tài nguyên"
+        description="Bạn có chắc chắn muốn xóa tài nguyên này? Các quyền liên quan đến tài nguyên này cũng sẽ bị xóa."
+        itemName={selectedResource?.name}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }

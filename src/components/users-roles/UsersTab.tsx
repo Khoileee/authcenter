@@ -7,8 +7,12 @@ import { DataTable, Column } from "@/components/ui/data-table";
 import { CreateUserPanel } from "@/components/dialogs/CreateUserDialog";
 import { UserPermissionDialog } from "@/components/dialogs/UserPermissionDialog";
 import { SearchFilter } from "@/components/common/SearchFilter";
-import { ViewButton, EditButton, PermissionButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewButton, EditButton, DeleteButton, PermissionButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewDetailPanel } from "@/components/common/ViewDetailPanel";
+import { EditFormPanel, EditFormField } from "@/components/common/EditFormPanel";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const mockUsers = [
   { id: 1, name: "Nguyễn Văn An", username: "annv", email: "annv@company.com", unit: "IT Department", roles: ["Admin", "Manager"], status: "active" },
@@ -39,9 +43,14 @@ const mockUsers = [
 ];
 
 export function UsersTab() {
+  const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: "", username: "", email: "", unit: "" });
   const [searchValue, setSearchValue] = useState("");
   const [unitFilter, setUnitFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -51,11 +60,57 @@ export function UsersTab() {
     setIsPermissionDialogOpen(true);
   };
 
+  const handleView = (user: typeof mockUsers[0]) => {
+    setSelectedUser(user);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleEdit = (user: typeof mockUsers[0]) => {
+    setSelectedUser(user);
+    setEditFormData({ name: user.name, username: user.username, email: user.email, unit: user.unit });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (user: typeof mockUsers[0]) => {
+    setSelectedUser(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    toast({ title: "Đã xóa người dùng", description: `Người dùng "${selectedUser?.name}" đã được xóa thành công.` });
+    setIsDeleteDialogOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleSaveEdit = () => {
+    toast({ title: "Đã cập nhật", description: `Thông tin người dùng "${editFormData.name}" đã được cập nhật.` });
+    setIsEditDialogOpen(false);
+    setSelectedUser(null);
+  };
+
   const handleReset = () => {
     setSearchValue("");
     setUnitFilter("all");
     setStatusFilter("all");
   };
+
+  const editFields: EditFormField[] = [
+    { name: "name", label: "Họ tên", type: "text", value: editFormData.name, required: true },
+    { name: "username", label: "Username", type: "text", value: editFormData.username, required: true, disabled: true },
+    { name: "email", label: "Email", type: "email", value: editFormData.email, required: true },
+    { name: "unit", label: "Đơn vị", type: "select", value: editFormData.unit, required: true, options: [
+      { value: "IT Department", label: "IT Department" },
+      { value: "HR Department", label: "HR Department" },
+      { value: "Data Team", label: "Data Team" },
+      { value: "Marketing", label: "Marketing" },
+      { value: "Sales", label: "Sales" },
+      { value: "Finance", label: "Finance" },
+      { value: "Operations", label: "Operations" },
+      { value: "Customer Service", label: "Customer Service" },
+      { value: "Legal", label: "Legal" },
+      { value: "Research", label: "Research" },
+    ]},
+  ];
 
   const columns: Column<typeof mockUsers[0]>[] = [
     { header: "Họ tên", accessorKey: "name", className: "font-medium" },
@@ -91,8 +146,9 @@ export function UsersTab() {
       className: "text-center",
       cell: (user) => (
         <ActionButtonsContainer>
-          <ViewButton onClick={() => console.log("View", user.id)} />
-          <EditButton onClick={() => console.log("Edit", user.id)} />
+          <ViewButton onClick={() => handleView(user)} />
+          <EditButton onClick={() => handleEdit(user)} />
+          <DeleteButton onClick={() => handleDelete(user)} />
           <PermissionButton onClick={() => handleOpenPermissionDialog(user)} />
         </ActionButtonsContainer>
       ),
@@ -157,6 +213,43 @@ export function UsersTab() {
         open={isPermissionDialogOpen} 
         onOpenChange={setIsPermissionDialogOpen} 
         user={selectedUser}
+      />
+
+      {/* View Detail Panel */}
+      <ViewDetailPanel
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+        title={selectedUser?.name || ""}
+        description="Thông tin chi tiết người dùng"
+        badges={selectedUser ? [{ label: selectedUser.status === "active" ? "Hoạt động" : "Ngừng hoạt động", variant: selectedUser.status === "active" ? "success" : "secondary" }] : []}
+        fields={selectedUser ? [
+          { label: "Username", value: selectedUser.username },
+          { label: "Email", value: selectedUser.email },
+          { label: "Đơn vị", value: selectedUser.unit },
+          { label: "Vai trò", value: <div className="flex gap-1 flex-wrap">{selectedUser.roles.map(r => <Badge key={r} variant="secondary" className="font-normal">{r}</Badge>)}</div> },
+          { label: "Trạng thái", value: selectedUser.status === "active" ? "Hoạt động" : "Ngừng hoạt động" },
+        ] : []}
+      />
+
+      {/* Edit Panel */}
+      <EditFormPanel
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        title="Chỉnh sửa người dùng"
+        description="Cập nhật thông tin người dùng trong hệ thống"
+        fields={editFields}
+        onFieldChange={(name, value) => setEditFormData(prev => ({ ...prev, [name]: value }))}
+        onSave={handleSaveEdit}
+      />
+
+      {/* Delete Confirm Dialog */}
+      <DeleteConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Xóa người dùng"
+        description="Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác."
+        itemName={selectedUser?.name}
+        onConfirm={handleConfirmDelete}
       />
     </>
   );

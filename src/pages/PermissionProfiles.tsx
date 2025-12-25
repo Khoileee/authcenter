@@ -8,6 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CreateProfileDialog } from "@/components/dialogs/CreateProfileDialog";
 import { SearchFilter } from "@/components/common/SearchFilter";
 import { ViewButton, EditButton, CopyButton, DeleteButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewDetailPanel } from "@/components/common/ViewDetailPanel";
+import { EditFormPanel, EditFormField } from "@/components/common/EditFormPanel";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data
 const mockProfiles = [
@@ -32,11 +36,49 @@ const mockProfiles = [
 ];
 
 export default function PermissionProfiles() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [unitFilter, setUnitFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<typeof mockProfiles[0] | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: "", appliedFor: "" });
+
+  const handleView = (profile: typeof mockProfiles[0]) => {
+    setSelectedProfile(profile);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleEdit = (profile: typeof mockProfiles[0]) => {
+    setSelectedProfile(profile);
+    setEditFormData({ name: profile.name, appliedFor: profile.appliedFor });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (profile: typeof mockProfiles[0]) => {
+    setSelectedProfile(profile);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleClone = (profile: typeof mockProfiles[0]) => {
+    toast({ title: "Đã sao chép profile", description: `Profile "${profile.name}" đã được sao chép thành "${profile.name} (Copy)".` });
+  };
+
+  const handleConfirmDelete = () => {
+    toast({ title: "Đã xóa profile", description: `Profile "${selectedProfile?.name}" đã được xóa thành công.` });
+    setIsDeleteDialogOpen(false);
+    setSelectedProfile(null);
+  };
+
+  const handleSaveEdit = () => {
+    toast({ title: "Đã cập nhật", description: `Profile "${editFormData.name}" đã được cập nhật.` });
+    setIsEditDialogOpen(false);
+    setSelectedProfile(null);
+  };
 
   const handleReset = () => {
     setSearchTerm("");
@@ -44,6 +86,11 @@ export default function PermissionProfiles() {
     setUnitFilter("all");
     setRoleFilter("all");
   };
+
+  const editFields: EditFormField[] = [
+    { name: "name", label: "Tên profile", type: "text", value: editFormData.name, required: true },
+    { name: "appliedFor", label: "Áp dụng cho", type: "textarea", value: editFormData.appliedFor, placeholder: "Ví dụ: Đơn vị = IT; Vai trò = Developer" },
+  ];
 
   const columns: { header: string; accessor: keyof typeof mockProfiles[0]; className?: string; render?: (value: any, row: typeof mockProfiles[0]) => React.ReactNode; }[] = [
     {
@@ -93,12 +140,12 @@ export default function PermissionProfiles() {
       header: "Hành động",
       accessor: "id",
       className: "text-center",
-      render: (value: number) => (
+      render: (_value: number, row: typeof mockProfiles[0]) => (
         <ActionButtonsContainer>
-          <ViewButton onClick={() => console.log("View", value)} />
-          <EditButton onClick={() => console.log("Edit", value)} />
-          <CopyButton onClick={() => console.log("Clone", value)} />
-          <DeleteButton onClick={() => console.log("Delete", value)} />
+          <ViewButton onClick={() => handleView(row)} />
+          <EditButton onClick={() => handleEdit(row)} />
+          <CopyButton onClick={() => handleClone(row)} />
+          <DeleteButton onClick={() => handleDelete(row)} />
         </ActionButtonsContainer>
       ),
     },
@@ -177,6 +224,43 @@ export default function PermissionProfiles() {
           <CreateProfileDialog 
             open={createDialogOpen} 
             onOpenChange={setCreateDialogOpen}
+          />
+
+          {/* View Detail Panel */}
+          <ViewDetailPanel
+            open={isViewDialogOpen}
+            onOpenChange={setIsViewDialogOpen}
+            title={selectedProfile?.name || ""}
+            description="Thông tin chi tiết profile quyền"
+            badges={selectedProfile ? [{ label: selectedProfile.status === "active" ? "Active" : "Inactive", variant: selectedProfile.status === "active" ? "success" : "secondary" }] : []}
+            fields={selectedProfile ? [
+              { label: "Tên profile", value: selectedProfile.name },
+              { label: "Áp dụng cho", value: selectedProfile.appliedFor },
+              { label: "Số quyền hệ thống", value: <Badge variant="outline">{selectedProfile.systemPermCount} quyền</Badge> },
+              { label: "Số quyền dữ liệu", value: <Badge variant="outline">{selectedProfile.dataPermCount} quyền</Badge> },
+              { label: "Trạng thái", value: selectedProfile.status === "active" ? "Active" : "Inactive" },
+            ] : []}
+          />
+
+          {/* Edit Panel */}
+          <EditFormPanel
+            open={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            title="Chỉnh sửa profile"
+            description="Cập nhật thông tin profile quyền"
+            fields={editFields}
+            onFieldChange={(name, value) => setEditFormData(prev => ({ ...prev, [name]: value }))}
+            onSave={handleSaveEdit}
+          />
+
+          {/* Delete Confirm Dialog */}
+          <DeleteConfirmDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+            title="Xóa profile quyền"
+            description="Bạn có chắc chắn muốn xóa profile này? Người dùng đang sử dụng profile này sẽ mất các quyền tương ứng."
+            itemName={selectedProfile?.name}
+            onConfirm={handleConfirmDelete}
           />
         </div>
       </main>

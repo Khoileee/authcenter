@@ -5,7 +5,11 @@ import { DataTable, Column } from "@/components/ui/data-table";
 import { CreateRolePanel } from "@/components/dialogs/CreateRoleDialog";
 import { SearchFilter } from "@/components/common/SearchFilter";
 import { ViewButton, EditButton, DeleteButton, ActionButtonsContainer } from "@/components/common/ActionButtons";
+import { ViewDetailPanel } from "@/components/common/ViewDetailPanel";
+import { EditFormPanel, EditFormField } from "@/components/common/EditFormPanel";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const mockRoles = [
   { id: 1, name: "Admin", description: "Quyền quản trị toàn hệ thống, quản lý người dùng và cấu hình", userCount: 5 },
@@ -26,12 +30,51 @@ const mockRoles = [
 ];
 
 export function RolesTab() {
+  const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<typeof mockRoles[0] | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: "", description: "" });
   const [searchValue, setSearchValue] = useState("");
+
+  const handleView = (role: typeof mockRoles[0]) => {
+    setSelectedRole(role);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleEdit = (role: typeof mockRoles[0]) => {
+    setSelectedRole(role);
+    setEditFormData({ name: role.name, description: role.description });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (role: typeof mockRoles[0]) => {
+    setSelectedRole(role);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    toast({ title: "Đã xóa vai trò", description: `Vai trò "${selectedRole?.name}" đã được xóa thành công.` });
+    setIsDeleteDialogOpen(false);
+    setSelectedRole(null);
+  };
+
+  const handleSaveEdit = () => {
+    toast({ title: "Đã cập nhật", description: `Vai trò "${editFormData.name}" đã được cập nhật.` });
+    setIsEditDialogOpen(false);
+    setSelectedRole(null);
+  };
 
   const handleReset = () => {
     setSearchValue("");
   };
+
+  const editFields: EditFormField[] = [
+    { name: "name", label: "Tên vai trò", type: "text", value: editFormData.name, required: true },
+    { name: "description", label: "Mô tả", type: "textarea", value: editFormData.description },
+  ];
 
   const columns: Column<typeof mockRoles[0]>[] = [
     { header: "Tên vai trò", accessorKey: "name", className: "font-medium" },
@@ -42,9 +85,9 @@ export function RolesTab() {
       className: "text-center",
       cell: (role) => (
         <ActionButtonsContainer>
-          <ViewButton onClick={() => console.log("View", role.id)} />
-          <EditButton onClick={() => console.log("Edit", role.id)} />
-          <DeleteButton onClick={() => console.log("Delete", role.id)} />
+          <ViewButton onClick={() => handleView(role)} />
+          <EditButton onClick={() => handleEdit(role)} />
+          <DeleteButton onClick={() => handleDelete(role)} />
         </ActionButtonsContainer>
       ),
     },
@@ -79,6 +122,40 @@ export function RolesTab() {
       </Card>
 
       <CreateRolePanel open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
+
+      {/* View Detail Panel */}
+      <ViewDetailPanel
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+        title={selectedRole?.name || ""}
+        description="Thông tin chi tiết vai trò"
+        fields={selectedRole ? [
+          { label: "Tên vai trò", value: selectedRole.name },
+          { label: "Mô tả", value: selectedRole.description },
+          { label: "Số người dùng", value: `${selectedRole.userCount} người` },
+        ] : []}
+      />
+
+      {/* Edit Panel */}
+      <EditFormPanel
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        title="Chỉnh sửa vai trò"
+        description="Cập nhật thông tin vai trò trong hệ thống"
+        fields={editFields}
+        onFieldChange={(name, value) => setEditFormData(prev => ({ ...prev, [name]: value }))}
+        onSave={handleSaveEdit}
+      />
+
+      {/* Delete Confirm Dialog */}
+      <DeleteConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Xóa vai trò"
+        description="Bạn có chắc chắn muốn xóa vai trò này? Tất cả người dùng có vai trò này sẽ bị ảnh hưởng."
+        itemName={selectedRole?.name}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }
