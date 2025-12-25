@@ -43,7 +43,7 @@ export function RolesTab() {
     <>
       <Card className="h-full flex flex-col border-none shadow-none bg-transparent">
         <CardHeader className="flex flex-row items-center justify-between px-0 pt-0 pb-6">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1.5">
             <CardTitle className="text-2xl font-bold tracking-tight">Danh sách vai trò</CardTitle>
             <p className="text-sm text-muted-foreground">Quản lý các vai trò và quyền hạn trong hệ thống</p>
           </div>

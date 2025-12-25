@@ -83,22 +83,30 @@ export default function CreatePolicy() {
     };
 
     return (
-        <div className="flex-1 p-8 overflow-auto">
-            {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-muted-foreground">
-                Chính sách phân quyền / <span className="text-foreground">Tạo mới</span>
-            </div>
+        <div className="flex-1 p-6 overflow-auto">
+            {/* Page Header */}
+            <div className="max-w-5xl">
+                {/* Breadcrumb */}
+                <div className="mb-4 text-sm text-muted-foreground">
+                    Chính sách phân quyền / <span className="text-foreground font-medium">Tạo mới</span>
+                </div>
 
-            {/* Title */}
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Tạo chính sách mới</h1>
+                {/* Title */}
+                <div className="space-y-1.5 mb-6">
+                    <h1 className="text-2xl font-bold tracking-tight">Tạo chính sách mới</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Định nghĩa chính sách phân quyền với các điều kiện cụ thể
+                    </p>
+                </div>
 
-            {/* Info Box */}
-            <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-lg flex gap-3">
-                <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-muted-foreground">
-                    <strong>Một chính sách gồm 3 phần:</strong> 1. WHO (vai trò / người dùng), 2. WHAT (tài nguyên & hành động),
-                    3. HOW (điều kiện ABAC – tùy chọn). Kết quả policy sẽ là allow/deny theo đúng rule đã chọn.
-                </p>
+                {/* Info Box */}
+                <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-lg flex gap-3">
+                    <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-muted-foreground">
+                        <strong>Một chính sách gồm 3 phần:</strong> 1. WHO (vai trò / người dùng), 2. WHAT (tài nguyên & hành động),
+                        3. HOW (điều kiện ABAC – tùy chọn). Kết quả policy sẽ là allow/deny theo đúng rule đã chọn.
+                    </p>
+                </div>
             </div>
 
             <div className="space-y-6 max-w-5xl">

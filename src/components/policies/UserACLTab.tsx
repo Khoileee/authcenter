@@ -191,7 +191,7 @@ export function UserACLTab() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                     <h2 className="text-2xl font-bold tracking-tight">Quyền theo người dùng (ACL)</h2>
                     <TooltipProvider>
@@ -208,11 +208,10 @@ export function UserACLTab() {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
+                <p className="text-sm text-muted-foreground">
+                    Quyền từ tab này sẽ được ưu tiên hơn quyền từ vai trò hoặc nhóm động.
+                </p>
             </div>
-
-            <p className="text-sm text-foreground/70">
-                Quyền từ tab này sẽ được ưu tiên hơn quyền từ vai trò hoặc nhóm động.
-            </p>
 
             {/* Search User */}
             <Card className="p-4">

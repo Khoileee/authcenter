@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { SearchBar } from "@/components/common/SearchBar";
 import { DataTable } from "@/components/common/DataTable";
@@ -5,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Plus, Eye, Edit, Copy, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
 import { CreateProfileDialog } from "@/components/dialogs/CreateProfileDialog";
 
 // Mock data
@@ -43,7 +43,7 @@ export default function PermissionProfiles() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const columns = [
+  const columns: { header: string; accessor: keyof typeof mockProfiles[0]; render?: (value: any, row: typeof mockProfiles[0]) => React.ReactNode; }[] = [
     {
       header: "Tên profile",
       accessor: "name",
@@ -135,10 +135,18 @@ export default function PermissionProfiles() {
 
       <main className="flex-1 flex flex-col p-6 overflow-hidden">
         <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0">
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground">
-              Quản lý các gói quyền có thể gán nhanh cho người dùng
-            </p>
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="space-y-1.5">
+              <h1 className="text-2xl font-bold tracking-tight">Quản lý Profile quyền</h1>
+              <p className="text-sm text-muted-foreground">
+                Quản lý các gói quyền có thể gán nhanh cho người dùng trong hệ thống
+              </p>
+            </div>
+            <Button onClick={() => setCreateDialogOpen(true)} className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105">
+              <Plus className="h-4 w-4" />
+              Tạo profile mới
+            </Button>
           </div>
 
           {/* Filters */}
@@ -152,7 +160,7 @@ export default function PermissionProfiles() {
             </div>
 
             <Select value={unitFilter} onValueChange={setUnitFilter}>
-              <SelectTrigger className="w-48 bg-white">
+              <SelectTrigger className="w-48 bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
                 <SelectValue placeholder="Đơn vị áp dụng" />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +172,7 @@ export default function PermissionProfiles() {
             </Select>
 
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-48 bg-white">
+              <SelectTrigger className="w-48 bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
                 <SelectValue placeholder="Vai trò áp dụng" />
               </SelectTrigger>
               <SelectContent>
@@ -176,7 +184,7 @@ export default function PermissionProfiles() {
             </Select>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40 bg-white">
+              <SelectTrigger className="w-40 bg-background/50 border-border/50 shadow-sm hover:bg-background/80">
                 <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
               <SelectContent>
@@ -185,11 +193,6 @@ export default function PermissionProfiles() {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-
-            <Button onClick={() => setCreateDialogOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Tạo profile mới
-            </Button>
           </div>
 
           {/* Table */}

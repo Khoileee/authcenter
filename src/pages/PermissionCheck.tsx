@@ -27,6 +27,14 @@ export default function PermissionCheck() {
 
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="space-y-1.5 mb-6">
+            <h1 className="text-2xl font-bold tracking-tight">Kiểm tra quyền truy cập</h1>
+            <p className="text-sm text-muted-foreground">
+              Kiểm tra xem người dùng có quyền truy cập tài nguyên với hành động cụ thể hay không
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Input Card */}
             <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm">

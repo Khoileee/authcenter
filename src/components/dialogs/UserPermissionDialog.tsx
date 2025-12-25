@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, Plus, Trash2 } from "lucide-react";
+import { Info, Plus, Trash2, Check, ChevronsUpDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserSystemPermissions } from "./user-permission-steps/UserSystemPermissions";
 import { UserDataPermissions } from "./user-permission-steps/UserDataPermissions";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface User {
   id: number;
@@ -57,6 +60,30 @@ const mockProfiles = [
     description: "Toàn quyền quản trị hệ thống",
     conditions: "Vai trò = Admin",
   },
+  {
+    id: "profile_4",
+    name: "DQ Manager - Quản lý DQ",
+    description: "Quyền quản lý Data Quality Rules và Reports",
+    conditions: "Đơn vị = TTPTDL; Vai trò = DQ Manager",
+  },
+  {
+    id: "profile_5",
+    name: "BI Analyst - Phân tích BI",
+    description: "Quyền tạo và chỉnh sửa Dashboard, Reports",
+    conditions: "Đơn vị = BI Team; Vai trò = Analyst",
+  },
+  {
+    id: "profile_6",
+    name: "Ticket Support - Hỗ trợ",
+    description: "Quyền xử lý và phản hồi tickets",
+    conditions: "Vai trò = Support",
+  },
+  {
+    id: "profile_7",
+    name: "Developer - SQL Access",
+    description: "Quyền truy cập SQLWF và query database",
+    conditions: "Vai trò = Developer",
+  },
 ];
 
 const mockSystems = [
@@ -72,6 +99,7 @@ export function UserPermissionDialog({ open, onOpenChange, user }: UserPermissio
   const { toast } = useToast();
   const [permissionMode, setPermissionMode] = useState<"profile" | "custom">("profile");
   const [selectedProfile, setSelectedProfile] = useState<string>("");
+  const [profileComboOpen, setProfileComboOpen] = useState(false);
   const [systemBlocks, setSystemBlocks] = useState<SystemBlock[]>([]);
 
   const handleSubmit = () => {
@@ -186,13 +214,13 @@ export function UserPermissionDialog({ open, onOpenChange, user }: UserPermissio
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="profile" id="mode-profile" />
                 <Label htmlFor="mode-profile" className="cursor-pointer font-medium">
-                  Gán quyền theo Profile (đơn giản)
+                  Phân quyền theo Profile
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="custom" id="mode-custom" />
                 <Label htmlFor="mode-custom" className="cursor-pointer font-medium">
-                  Tự cấu hình quyền chi tiết
+                  Phân quyền thủ công
                 </Label>
               </div>
             </div>
@@ -221,21 +249,57 @@ export function UserPermissionDialog({ open, onOpenChange, user }: UserPermissio
                 <Label htmlFor="profile-select">
                   Profile <span className="text-destructive">*</span>
                 </Label>
-                <Select value={selectedProfile} onValueChange={setSelectedProfile}>
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Chọn profile quyền" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockProfiles.map((profile) => (
-                      <SelectItem key={profile.id} value={profile.id}>
-                        <div className="py-1">
-                          <div className="font-medium">{profile.name}</div>
-                          <div className="text-xs text-muted-foreground">{profile.description}</div>
+                <Popover open={profileComboOpen} onOpenChange={setProfileComboOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={profileComboOpen}
+                      className="w-full justify-between bg-background"
+                    >
+                      {selectedProfile ? (
+                        <div className="text-left">
+                          <div className="font-medium">{mockProfiles.find((p) => p.id === selectedProfile)?.name}</div>
+                          <div className="text-xs text-muted-foreground">{mockProfiles.find((p) => p.id === selectedProfile)?.description}</div>
                         </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      ) : (
+                        "Chọn profile quyền"
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <Command>
+                      <CommandInput placeholder="Tìm kiếm profile..." />
+                      <CommandList>
+                        <CommandEmpty>Không tìm thấy profile.</CommandEmpty>
+                        <CommandGroup>
+                          {mockProfiles.map((profile) => (
+                            <CommandItem
+                              key={profile.id}
+                              value={profile.name + " " + profile.description}
+                              onSelect={() => {
+                                setSelectedProfile(profile.id);
+                                setProfileComboOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  selectedProfile === profile.id ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              <div className="py-1">
+                                <div className="font-medium">{profile.name}</div>
+                                <div className="text-xs text-muted-foreground">{profile.description}</div>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {selectedProfile && (
@@ -252,23 +316,37 @@ export function UserPermissionDialog({ open, onOpenChange, user }: UserPermissio
               {/* Add System Button */}
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Cấu hình quyền theo hệ thống</h3>
-                <Select onValueChange={addSystemBlock}>
-                  <SelectTrigger className="w-[250px] bg-background">
-                    <div className="flex items-center gap-2">
-                      <Plus className="h-4 w-4" />
-                      <SelectValue placeholder="Thêm hệ thống" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockSystems
-                      .filter((sys) => !systemBlocks.some((b) => b.systemId === sys.id))
-                      .map((system) => (
-                        <SelectItem key={system.id} value={system.id}>
-                          {system.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button className="shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm hệ thống
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[250px] p-0" align="end">
+                    <Command>
+                      <CommandInput placeholder="Tìm hệ thống..." />
+                      <CommandList>
+                        <CommandEmpty>Không tìm thấy hệ thống.</CommandEmpty>
+                        <CommandGroup>
+                          {mockSystems
+                            .filter((sys) => !systemBlocks.some((b) => b.systemId === sys.id))
+                            .map((system) => (
+                              <CommandItem
+                                key={system.id}
+                                value={system.name}
+                                onSelect={() => {
+                                  addSystemBlock(system.id);
+                                }}
+                              >
+                                {system.name}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* System Blocks */}
@@ -331,6 +409,7 @@ export function UserPermissionDialog({ open, onOpenChange, user }: UserPermissio
               onOpenChange(false);
               setPermissionMode("profile");
               setSelectedProfile("");
+              setProfileComboOpen(false);
               setSystemBlocks([]);
             }}
           >

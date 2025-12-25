@@ -26,7 +26,7 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-white backdrop-blur-xl">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar backdrop-blur-xl">
       <SidebarHeader className="border-b border-sidebar-border/50 p-5 group-data-[collapsible=icon]:p-3 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center transition-all duration-300">
         <div className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0">
           <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">
@@ -54,11 +54,11 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       className={cn(
-                        "flex items-center rounded-xl transition-all duration-300 ease-in-out hover:bg-sidebar-accent",
+                        "flex items-center rounded-xl transition-all duration-300 ease-in-out text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                         "h-11 px-3 gap-3 justify-start",
                         "group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:justify-center"
                       )}
-                      activeClassName="!bg-primary/10 !text-primary font-medium"
+                      activeClassName="!bg-primary !text-white font-medium shadow-lg shadow-primary/30"
                     >
                       <Icon className="h-5 w-5 flex-shrink-0 transition-transform duration-300 hover:scale-110" />
                       <span className={cn(

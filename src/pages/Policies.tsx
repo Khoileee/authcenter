@@ -11,9 +11,9 @@ export default function Policies() {
       <main className="flex-1 flex flex-col p-6 overflow-hidden">
         <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0">
           <Tabs defaultValue="acl" className="flex-1 flex flex-col min-h-0">
-            <TabsList className="mb-4">
-              <TabsTrigger value="acl">Quyền theo người dùng (ACL)</TabsTrigger>
-              <TabsTrigger value="rbac">Quyền theo vai trò (RBAC & ABAC)</TabsTrigger>
+            <TabsList className="mb-4 bg-muted/50 p-1 w-fit">
+              <TabsTrigger value="acl" className="data-[state=active]:bg-background data-[state=active]:shadow-sm px-6">Quyền theo người dùng (ACL)</TabsTrigger>
+              <TabsTrigger value="rbac" className="data-[state=active]:bg-background data-[state=active]:shadow-sm px-6">Quyền theo vai trò (RBAC & ABAC)</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: User ACL */}

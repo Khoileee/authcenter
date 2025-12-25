@@ -91,9 +91,9 @@ export function UsersTab() {
     <>
       <Card className="h-full flex flex-col border-none shadow-none bg-transparent">
         <CardHeader className="flex flex-row items-center justify-between px-0 pt-0 pb-6">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1.5">
             <CardTitle className="text-2xl font-bold tracking-tight">Quản lý người dùng</CardTitle>
-            <p className="text-sm text-muted-foreground">Quản lý thông tin người dùng và phân quyền</p>
+            <p className="text-sm text-muted-foreground">Quản lý thông tin người dùng và phân quyền trong hệ thống</p>
           </div>
           <Button className="shadow-lg shadow-primary/20 transition-all hover:scale-105" onClick={() => setIsCreateDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />

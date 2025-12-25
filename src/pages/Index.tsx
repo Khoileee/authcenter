@@ -11,11 +11,11 @@ const Index = () => {
 
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-7xl mx-auto space-y-8 pb-8">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground bg-gradient-to-r from-primary to-indigo-600 bg-clip-text text-transparent w-fit">
+          <div className="space-y-1.5">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Chào mừng đến với Auth Center
-            </h2>
-            <p className="text-muted-foreground text-lg">
+            </h1>
+            <p className="text-sm text-muted-foreground">
               Hệ thống quản lý phân quyền tập trung cho doanh nghiệp
             </p>
           </div>
