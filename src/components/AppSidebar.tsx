@@ -1,4 +1,4 @@
-import { Shield, Users, Database, FileText, CheckCircle, UserCog } from "lucide-react";
+import { Shield, Server, Users, UserCheck, Building2, Database, FileText, CheckCircle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -14,11 +14,13 @@ import {
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { title: "Người dùng & Vai trò", url: "/users-roles", icon: Users },
-  { title: "Tài nguyên", url: "/resources-actions", icon: Database },
-  { title: "Profile quyền", url: "/permission-profiles", icon: UserCog },
-  { title: "Chính sách phân quyền", url: "/policies", icon: FileText },
+  { title: "Quản lý người dùng", url: "/users", icon: Users },
+  { title: "Quản lý vai trò", url: "/roles", icon: UserCheck },
+  { title: "Quản lý đơn vị", url: "/units", icon: Building2 },
+  { title: "Quản lý profile quyền", url: "/policies", icon: FileText },
   { title: "Kiểm tra quyền", url: "/permission-check", icon: CheckCircle },
+  { title: "Quản lý tài nguyên", url: "/resources-actions", icon: Database },
+  { title: "Quản lý hệ thống", url: "/systems", icon: Server },
 ];
 
 export function AppSidebar() {

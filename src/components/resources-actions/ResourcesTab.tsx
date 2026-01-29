@@ -9,35 +9,37 @@ import { ViewDetailPanel } from "@/components/common/ViewDetailPanel";
 import { EditFormPanel, EditFormField } from "@/components/common/EditFormPanel";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const mockResources = [
-  { id: 1, system: "Ticket System", code: "feature.ticket.create", name: "Create Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
-  { id: 2, system: "Ticket System", code: "feature.ticket.view", name: "View Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
-  { id: 3, system: "Ticket System", code: "feature.ticket.assign", name: "Assign Ticket", type: "Business Entity", featureGroup: "Ticket System", status: "active" },
-  { id: 4, system: "Data Quality", code: "menu.data_quality", name: "Data Quality Menu", type: "UI Menu", featureGroup: "Data Management", status: "active" },
-  { id: 5, system: "Data Quality", code: "api.dq.upload_rule", name: "Upload Rule API", type: "API Endpoint", featureGroup: "Data Quality", status: "active" },
-  { id: 6, system: "Data Quality", code: "api.dq.execute_rule", name: "Execute Rule API", type: "API Endpoint", featureGroup: "Data Quality", status: "active" },
-  { id: 7, system: "Data Quality", code: "feature.dq.manage_rules", name: "Manage DQ Rules", type: "Business Entity", featureGroup: "Data Quality", status: "active" },
-  { id: 8, system: "Data Quality", code: "feature.dq.view_reports", name: "View DQ Reports", type: "Business Entity", featureGroup: "Data Quality", status: "active" },
-  { id: 9, system: "Administration", code: "menu.user_management", name: "User Management", type: "UI Menu", featureGroup: "Administration", status: "active" },
-  { id: 10, system: "Administration", code: "menu.role_management", name: "Role Management", type: "UI Menu", featureGroup: "Administration", status: "active" },
-  { id: 11, system: "Administration", code: "menu.audit_log", name: "Audit Log", type: "UI Menu", featureGroup: "Administration", status: "active" },
-  { id: 12, system: "Administration", code: "api.admin.export_users", name: "Export Users API", type: "API Endpoint", featureGroup: "Administration", status: "active" },
-  { id: 13, system: "Analytics", code: "menu.dashboard", name: "Analytics Dashboard", type: "UI Menu", featureGroup: "Analytics", status: "active" },
-  { id: 14, system: "Analytics", code: "menu.reports", name: "Reports Menu", type: "UI Menu", featureGroup: "Analytics", status: "active" },
-  { id: 15, system: "Analytics", code: "feature.report.create", name: "Create Report", type: "Business Entity", featureGroup: "Analytics", status: "active" },
-  { id: 16, system: "Analytics", code: "feature.report.export", name: "Export Report", type: "Business Entity", featureGroup: "Analytics", status: "active" },
-  { id: 17, system: "Workflow", code: "menu.workflow", name: "Workflow Menu", type: "UI Menu", featureGroup: "Workflow", status: "active" },
-  { id: 18, system: "Workflow", code: "feature.workflow.create", name: "Create Workflow", type: "Business Entity", featureGroup: "Workflow", status: "active" },
-  { id: 19, system: "Workflow", code: "feature.workflow.approve", name: "Approve Workflow", type: "Business Entity", featureGroup: "Workflow", status: "active" },
-  { id: 20, system: "Notification", code: "api.notification.send", name: "Send Notification API", type: "API Endpoint", featureGroup: "Notification", status: "active" },
-  { id: 21, system: "Notification", code: "menu.notification_settings", name: "Notification Settings", type: "UI Menu", featureGroup: "Notification", status: "active" },
-  { id: 22, system: "File Storage", code: "api.storage.upload", name: "Upload File API", type: "API Endpoint", featureGroup: "File Storage", status: "active" },
-  { id: 23, system: "File Storage", code: "api.storage.download", name: "Download File API", type: "API Endpoint", featureGroup: "File Storage", status: "active" },
-  { id: 24, system: "File Storage", code: "feature.storage.manage", name: "Manage Files", type: "Business Entity", featureGroup: "File Storage", status: "inactive" },
-  { id: 25, system: "Integration", code: "api.integration.sync", name: "Sync Data API", type: "API Endpoint", featureGroup: "Integration", status: "active" },
+  // SQLWF - SQL Workflow
+  { id: 1, systemCode: "SQLWF", system: "SQL Workflow", code: "menu.table_mgmt", name: "Quản lý bảng", type: "UI Menu", featureGroup: "Data Management", status: "active" },
+  { id: 2, systemCode: "SQLWF", system: "SQL Workflow", code: "menu.sql_mgmt", name: "Quản lý SQL", type: "UI Menu", featureGroup: "Data Management", status: "active" },
+  { id: 3, systemCode: "SQLWF", system: "SQL Workflow", code: "api.sql.execute", name: "Execute SQL API", type: "API Endpoint", featureGroup: "SQL Engine", status: "active" },
+  { id: 4, systemCode: "SQLWF", system: "SQL Workflow", code: "feature.job.create", name: "Tạo Job", type: "Business Entity", featureGroup: "Job Management", status: "active" },
+  { id: 5, systemCode: "SQLWF", system: "SQL Workflow", code: "feature.job.execute", name: "Chạy Job", type: "Business Entity", featureGroup: "Job Management", status: "active" },
+  // vDVS - Viettel Data Virtualization
+  { id: 6, systemCode: "vDVS", system: "Viettel Data Virtualization", code: "menu.data_catalog", name: "Data Catalog", type: "UI Menu", featureGroup: "Data Catalog", status: "active" },
+  { id: 7, systemCode: "vDVS", system: "Viettel Data Virtualization", code: "menu.data_lineage", name: "Data Lineage", type: "UI Menu", featureGroup: "Data Governance", status: "active" },
+  { id: 8, systemCode: "vDVS", system: "Viettel Data Virtualization", code: "api.metadata.sync", name: "Sync Metadata API", type: "API Endpoint", featureGroup: "Integration", status: "active" },
+  { id: 9, systemCode: "vDVS", system: "Viettel Data Virtualization", code: "feature.glossary.manage", name: "Quản lý Glossary", type: "Business Entity", featureGroup: "Data Governance", status: "active" },
+  // VTM - Viettel Ticket Management
+  { id: 10, systemCode: "VTM", system: "Viettel Ticket Management", code: "menu.ticket", name: "Quản lý Ticket", type: "UI Menu", featureGroup: "Ticket", status: "active" },
+  { id: 11, systemCode: "VTM", system: "Viettel Ticket Management", code: "feature.ticket.create", name: "Tạo Ticket", type: "Business Entity", featureGroup: "Ticket", status: "active" },
+  { id: 12, systemCode: "VTM", system: "Viettel Ticket Management", code: "feature.ticket.assign", name: "Assign Ticket", type: "Business Entity", featureGroup: "Ticket", status: "active" },
+  { id: 13, systemCode: "VTM", system: "Viettel Ticket Management", code: "api.ticket.export", name: "Export Ticket API", type: "API Endpoint", featureGroup: "Ticket", status: "active" },
+  // DQ - Data Quality Platform
+  { id: 14, systemCode: "DQ", system: "Data Quality Platform", code: "menu.dq_rules", name: "Quản lý DQ Rules", type: "UI Menu", featureGroup: "Data Quality", status: "active" },
+  { id: 15, systemCode: "DQ", system: "Data Quality Platform", code: "menu.dq_reports", name: "Báo cáo DQ", type: "UI Menu", featureGroup: "Data Quality", status: "active" },
+  { id: 16, systemCode: "DQ", system: "Data Quality Platform", code: "api.dq.execute_rule", name: "Execute DQ Rule API", type: "API Endpoint", featureGroup: "Data Quality", status: "active" },
+  { id: 17, systemCode: "DQ", system: "Data Quality Platform", code: "feature.dq.create_rule", name: "Tạo DQ Rule", type: "Business Entity", featureGroup: "Data Quality", status: "active" },
+  // ANALYTICS - Analytics Dashboard
+  { id: 18, systemCode: "ANALYTICS", system: "Analytics Dashboard", code: "menu.dashboard", name: "Dashboard", type: "UI Menu", featureGroup: "Analytics", status: "active" },
+  { id: 19, systemCode: "ANALYTICS", system: "Analytics Dashboard", code: "menu.reports", name: "Reports", type: "UI Menu", featureGroup: "Analytics", status: "active" },
+  { id: 20, systemCode: "ANALYTICS", system: "Analytics Dashboard", code: "feature.report.create", name: "Tạo Report", type: "Business Entity", featureGroup: "Analytics", status: "active" },
+  { id: 21, systemCode: "ANALYTICS", system: "Analytics Dashboard", code: "api.report.export", name: "Export Report API", type: "API Endpoint", featureGroup: "Analytics", status: "active" },
 ];
 
 export function ResourcesTab() {
@@ -92,14 +94,11 @@ export function ResourcesTab() {
     { name: "code", label: "Mã tài nguyên", type: "text", value: editFormData.code, required: true, disabled: true },
     { name: "name", label: "Tên hiển thị", type: "text", value: editFormData.name, required: true },
     { name: "system", label: "Hệ thống", type: "select", value: editFormData.system, required: true, options: [
-      { value: "Ticket System", label: "Ticket System" },
-      { value: "Data Quality", label: "Data Quality" },
-      { value: "Administration", label: "Administration" },
-      { value: "Analytics", label: "Analytics" },
-      { value: "Workflow", label: "Workflow" },
-      { value: "Notification", label: "Notification" },
-      { value: "File Storage", label: "File Storage" },
-      { value: "Integration", label: "Integration" },
+      { value: "SQLWF", label: "SQL Workflow" },
+      { value: "vDVS", label: "Viettel Data Virtualization" },
+      { value: "VTM", label: "Viettel Ticket Management" },
+      { value: "DQ", label: "Data Quality Platform" },
+      { value: "ANALYTICS", label: "Analytics Dashboard" },
     ]},
     { name: "type", label: "Loại", type: "select", value: editFormData.type, required: true, options: [
       { value: "Business Entity", label: "Business Entity" },
@@ -112,15 +111,15 @@ export function ResourcesTab() {
   const columns: Column<typeof mockResources[0]>[] = [
     { 
       header: "Hệ thống", 
-      accessorKey: "system",
+      accessorKey: "systemCode",
       cell: (resource) => (
-        <span className="font-medium text-foreground">{resource.system}</span>
+        <span className="font-mono text-sm font-medium text-primary">{resource.systemCode}</span>
       ),
     },
     { 
       header: "Mã tài nguyên", 
       accessorKey: "code", 
-      className: "font-mono text-sm text-primary"
+      className: "font-mono text-sm"
     },
     { 
       header: "Tên hiển thị", 
@@ -131,15 +130,12 @@ export function ResourcesTab() {
       header: "Trạng thái",
       accessorKey: "status",
       cell: (resource) => (
-        resource.status === "active" ? (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
-            Active
-          </span>
-        ) : (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200">
-            Inactive
-          </span>
-        )
+        <Switch
+          checked={resource.status === "active"}
+          onCheckedChange={() => {
+            toast({ title: "Cập nhật trạng thái", description: `Trạng thái tài nguyên "${resource.name}" đã được thay đổi.` });
+          }}
+        />
       ),
     },
     {

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Plus, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable, Column } from "@/components/ui/data-table";
@@ -130,15 +131,12 @@ export function UsersTab() {
     {
       header: "Trạng thái",
       cell: (user) => (
-        user.status === "active" ? (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-none bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/50">
-            Hoạt động
-          </span>
-        ) : (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200">
-            Ngừng hoạt động
-          </span>
-        )
+        <Switch
+          checked={user.status === "active"}
+          onCheckedChange={() => {
+            toast({ title: "Cập nhật trạng thái", description: `Trạng thái người dùng "${user.name}" đã được thay đổi.` });
+          }}
+        />
       ),
     },
     {
@@ -160,7 +158,7 @@ export function UsersTab() {
       <Card className="h-full flex flex-col border-none shadow-none bg-transparent">
         <CardHeader className="flex flex-row items-center justify-between px-0 pt-0 pb-6">
           <div className="flex flex-col gap-1.5">
-            <CardTitle className="text-2xl font-bold tracking-tight">Quản lý người dùng</CardTitle>
+            <CardTitle className="text-2xl font-bold tracking-tight">Danh sách người dùng</CardTitle>
             <p className="text-sm text-muted-foreground">Quản lý thông tin người dùng và phân quyền trong hệ thống</p>
           </div>
           <Button className="shadow-lg shadow-primary/20 transition-all hover:scale-105" onClick={() => setIsCreateDialogOpen(true)}>
