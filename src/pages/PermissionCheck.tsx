@@ -25,8 +25,8 @@ export default function PermissionCheck() {
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       <AppHeader title="Kiểm tra quyền" />
 
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full">
           {/* Page Header */}
           <div className="space-y-1.5 mb-6">
             <h1 className="text-2xl font-bold tracking-tight">Kiểm tra quyền truy cập</h1>
