@@ -185,7 +185,8 @@ export function ActionsTab() {
       ),
     },
     {
-      header: "Thao tác",
+      header: "Hành động",
+      headerClassName: "text-center",
       cell: (action) => (
         <ActionButtonsContainer>
           <ViewButton onClick={() => handleView(action)} />

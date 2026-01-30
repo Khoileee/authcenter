@@ -505,7 +505,7 @@ export function UnitsTab() {
               <TableHead className="font-semibold text-foreground/70 w-44">Ngày tạo</TableHead>
               <TableHead className="font-semibold text-foreground/70 w-36">Người tạo</TableHead>
               <TableHead className="font-semibold text-foreground/70 w-24">Trạng thái</TableHead>
-              <TableHead className="font-semibold text-foreground/70 text-center w-32">Thao tác</TableHead>
+              <TableHead className="font-semibold text-foreground/70 text-center w-32">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
