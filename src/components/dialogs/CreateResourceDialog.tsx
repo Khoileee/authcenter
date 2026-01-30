@@ -19,6 +19,7 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
     schema: "",
     table: "",
     attributes: [],
+    selectedActions: [],
   });
 
   const handleSubmit = () => {
@@ -36,6 +37,7 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
       schema: "",
       table: "",
       attributes: [],
+      selectedActions: [],
     });
   };
 
@@ -44,7 +46,13 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
   };
 
   const isValid = () => {
-    return formData.resourceName && formData.datasource && formData.schema && formData.table;
+    return (
+      formData.resourceName && 
+      formData.datasource && 
+      formData.schema && 
+      formData.table &&
+      formData.selectedActions.length > 0 // Phải chọn ít nhất 1 action
+    );
   };
 
   return (
@@ -75,6 +83,7 @@ export function CreateResourcePanel({ open, onOpenChange }: CreateResourcePanelP
                 schema: "",
                 table: "",
                 attributes: [],
+                selectedActions: [],
               });
             }}
           >

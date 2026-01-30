@@ -11,6 +11,7 @@ import Users from "./pages/Users";
 import Roles from "./pages/Roles";
 import Units from "./pages/Units";
 import ResourcesActions from "./pages/ResourcesActions";
+import Actions from "./pages/Actions";
 import Policies from "./pages/Policies";
 import PermissionCheck from "./pages/PermissionCheck";
 import NotFound from "./pages/NotFound";
@@ -34,6 +35,7 @@ const App = () => (
                 <Route path="/roles" element={<Roles />} />
                 <Route path="/units" element={<Units />} />
                 <Route path="/resources-actions" element={<ResourcesActions />} />
+                <Route path="/actions" element={<Actions />} />
                 <Route path="/policies" element={<Policies />} />
                 <Route path="/permission-check" element={<PermissionCheck />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -4,8 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SYSTEM_ACTIONS, ACTION_CATEGORIES, getActionsGroupedByCategory } from "@/data/actions";
 
 export interface AttributeConfig {
   id: string;
@@ -28,6 +30,7 @@ export interface ResourceFormData {
   schema: string;
   table: string;
   attributes: AttributeConfig[];
+  selectedActions: string[]; // Action codes được chọn
 }
 
 interface CreateResourceFormProps {
@@ -61,18 +64,7 @@ const dataTypes = [
   "uuid",
 ];
 
-// Mock actions - load từ hệ thống
-const systemActions: ActionConfig[] = [
-  { code: "view", name: "Xem chi tiết", description: "Quyền xem thông tin chi tiết" },
-  { code: "list", name: "Xem danh sách", description: "Quyền xem danh sách và tìm kiếm" },
-  { code: "create", name: "Tạo mới", description: "Quyền tạo bản ghi mới" },
-  { code: "update", name: "Cập nhật", description: "Quyền chỉnh sửa thông tin" },
-  { code: "delete", name: "Xóa", description: "Quyền xóa bản ghi" },
-  { code: "approve", name: "Phê duyệt", description: "Quyền phê duyệt hoặc từ chối" },
-  { code: "upload", name: "Upload", description: "Quyền upload file/metadata" },
-  { code: "download", name: "Download", description: "Quyền tải xuống" },
-  { code: "export", name: "Export", description: "Quyền xuất dữ liệu" },
-];
+// Actions được load từ shared data: SYSTEM_ACTIONS
 
 export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) {
   // Initialize attributes khi chọn table
@@ -314,6 +306,171 @@ export function CreateResourceForm({ data, onChange }: CreateResourceFormProps) 
           </div>
         </Card>
       )}
+
+      {/* Bước 4 — Chọn các Actions áp dụng cho Resource */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold">4. Chọn các Actions áp dụng</h3>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-xs">
+                    Chọn các hành động có thể thực hiện trên tài nguyên này. 
+                    Các actions này sẽ xuất hiện khi tạo Profile quyền.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            {data.selectedActions.length > 0 && (
+              <Badge variant="secondary" className="text-xs">
+                Đã chọn: {data.selectedActions.length} actions
+              </Badge>
+            )}
+          </div>
+
+          {/* Quick select buttons */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              onClick={() => {
+                // Select CRUD actions
+                const crudCodes = ["create", "read", "update", "delete"];
+                const current = new Set(data.selectedActions);
+                crudCodes.forEach(code => current.add(code));
+                onChange({ selectedActions: Array.from(current) });
+              }}
+            >
+              + CRUD cơ bản
+            </button>
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              onClick={() => {
+                // Select List actions
+                const listCodes = ["list", "search", "filter"];
+                const current = new Set(data.selectedActions);
+                listCodes.forEach(code => current.add(code));
+                onChange({ selectedActions: Array.from(current) });
+              }}
+            >
+              + Danh sách/Tìm kiếm
+            </button>
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              onClick={() => {
+                // Select Export/Import actions
+                const dataCodes = ["export", "import", "clone"];
+                const current = new Set(data.selectedActions);
+                dataCodes.forEach(code => current.add(code));
+                onChange({ selectedActions: Array.from(current) });
+              }}
+            >
+              + Xuất/Nhập dữ liệu
+            </button>
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+              onClick={() => onChange({ selectedActions: [] })}
+            >
+              Bỏ chọn tất cả
+            </button>
+          </div>
+
+          {/* Actions grouped by category */}
+          <div className="space-y-4">
+            {ACTION_CATEGORIES.map((category) => {
+              const categoryActions = SYSTEM_ACTIONS.filter(
+                a => a.category === category.value && a.status === "active"
+              );
+              if (categoryActions.length === 0) return null;
+
+              const selectedInCategory = categoryActions.filter(
+                a => data.selectedActions.includes(a.code)
+              ).length;
+
+              return (
+                <div key={category.value} className="border rounded-lg overflow-hidden">
+                  {/* Category header */}
+                  <div className="flex items-center justify-between px-4 py-2 bg-muted/50">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={selectedInCategory === categoryActions.length}
+                        onCheckedChange={(checked) => {
+                          const categoryCodes = categoryActions.map(a => a.code);
+                          if (checked) {
+                            const current = new Set(data.selectedActions);
+                            categoryCodes.forEach(code => current.add(code));
+                            onChange({ selectedActions: Array.from(current) });
+                          } else {
+                            onChange({
+                              selectedActions: data.selectedActions.filter(
+                                code => !categoryCodes.includes(code)
+                              )
+                            });
+                          }
+                        }}
+                      />
+                      <span className="font-medium text-sm">{category.label}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedInCategory}/{categoryActions.length}
+                    </span>
+                  </div>
+
+                  {/* Actions in category */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1 p-2">
+                    {categoryActions.map((action) => {
+                      const isSelected = data.selectedActions.includes(action.code);
+                      return (
+                        <label
+                          key={action.code}
+                          className={`
+                            flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors
+                            ${isSelected 
+                              ? "bg-primary/10 border border-primary/30" 
+                              : "hover:bg-muted/50 border border-transparent"
+                            }
+                          `}
+                        >
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                onChange({ selectedActions: [...data.selectedActions, action.code] });
+                              } else {
+                                onChange({
+                                  selectedActions: data.selectedActions.filter(c => c !== action.code)
+                                });
+                              }
+                            }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-medium">{action.name}</span>
+                              {isSelected && (
+                                <Check className="h-3 w-3 text-primary shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {action.description}
+                            </p>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
