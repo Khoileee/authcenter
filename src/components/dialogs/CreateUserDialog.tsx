@@ -14,6 +14,7 @@ interface CreateUserPanelProps {
 
 export function CreateUserPanel({ open, onOpenChange }: CreateUserPanelProps) {
     const [formData, setFormData] = useState({
+        employeeId: "",
         fullName: "",
         username: "",
         email: "",
@@ -67,6 +68,20 @@ export function CreateUserPanel({ open, onOpenChange }: CreateUserPanelProps) {
 
                 <form onSubmit={handleSubmit} className="space-y-6 py-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Mã nhân viên */}
+                        <div className="space-y-2">
+                            <Label htmlFor="employeeId">
+                                Mã nhân viên
+                            </Label>
+                            <Input
+                                id="employeeId"
+                                placeholder="NV001"
+                                value={formData.employeeId}
+                                onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
+                                className="bg-background"
+                            />
+                        </div>
+
                         {/* Họ và tên */}
                         <div className="space-y-2">
                             <Label htmlFor="fullName">
@@ -95,6 +110,9 @@ export function CreateUserPanel({ open, onOpenChange }: CreateUserPanelProps) {
                                 required
                                 className="bg-background"
                             />
+                            <p className="text-xs text-muted-foreground">
+                                Username phải khớp với tài khoản SSO để đăng nhập
+                            </p>
                         </div>
 
                         {/* Email */}

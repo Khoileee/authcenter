@@ -16,31 +16,31 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const mockUsers = [
-  { id: 1, name: "Nguyễn Văn An", username: "annv", email: "annv@company.com", unit: "IT Department", roles: ["Admin", "Manager"], status: "active" },
-  { id: 2, name: "Trần Thị Bình", username: "binhtt", email: "binhtt@company.com", unit: "HR Department", roles: ["HR Manager"], status: "active" },
-  { id: 3, name: "Lê Nhật Khôi", username: "khoiln1", email: "khoiln1@company.com", unit: "Data Team", roles: ["Data Analyst", "DQ Admin"], status: "active" },
-  { id: 4, name: "Phạm Minh Đức", username: "ducpm", email: "ducpm@company.com", unit: "IT Department", roles: ["Developer"], status: "inactive" },
-  { id: 5, name: "Hoàng Thu Thảo", username: "thaoht", email: "thaoht@company.com", unit: "Marketing", roles: ["User"], status: "active" },
-  { id: 6, name: "Vũ Tuấn Anh", username: "anhvt", email: "anhvt@company.com", unit: "Sales", roles: ["Sales Manager"], status: "active" },
-  { id: 7, name: "Đặng Thị Mai", username: "maidt", email: "maidt@company.com", unit: "HR Department", roles: ["User"], status: "active" },
-  { id: 8, name: "Ngô Văn Hùng", username: "hungnv", email: "hungnv@company.com", unit: "IT Department", roles: ["DevOps", "SRE"], status: "active" },
-  { id: 9, name: "Bùi Thị Lan", username: "lanbt", email: "lanbt@company.com", unit: "Finance", roles: ["Accountant"], status: "inactive" },
-  { id: 10, name: "Trịnh Quốc Bảo", username: "baotq", email: "baotq@company.com", unit: "Board", roles: ["Admin", "Auditor"], status: "active" },
-  { id: 11, name: "Lý Thị Hà", username: "halt", email: "halt@company.com", unit: "Marketing", roles: ["User"], status: "active" },
-  { id: 12, name: "Nguyễn Thanh Tùng", username: "tungnt", email: "tungnt@company.com", unit: "IT Department", roles: ["Developer", "Tech Lead"], status: "active" },
-  { id: 13, name: "Võ Minh Quang", username: "quangvm", email: "quangvm@company.com", unit: "Data Team", roles: ["Data Engineer"], status: "active" },
-  { id: 14, name: "Phan Thị Hương", username: "huongpt", email: "huongpt@company.com", unit: "Finance", roles: ["Finance Manager"], status: "active" },
-  { id: 15, name: "Đỗ Văn Thành", username: "thanhdv", email: "thanhdv@company.com", unit: "IT Department", roles: ["Security Admin"], status: "active" },
-  { id: 16, name: "Lương Thị Ngọc", username: "ngoclt", email: "ngoclt@company.com", unit: "Customer Service", roles: ["Support Lead"], status: "active" },
-  { id: 17, name: "Trương Văn Hải", username: "haitv", email: "haitv@company.com", unit: "Operations", roles: ["Ops Manager"], status: "active" },
-  { id: 18, name: "Mai Anh Tuấn", username: "tuanma", email: "tuanma@company.com", unit: "Data Team", roles: ["BI Analyst"], status: "active" },
-  { id: 19, name: "Hoàng Văn Phúc", username: "phuchv", email: "phuchv@company.com", unit: "IT Department", roles: ["QA Engineer"], status: "inactive" },
-  { id: 20, name: "Nguyễn Thị Linh", username: "linhnt", email: "linhnt@company.com", unit: "Legal", roles: ["Legal Advisor"], status: "active" },
-  { id: 21, name: "Cao Minh Trí", username: "tricm", email: "tricm@company.com", unit: "Research", roles: ["Researcher"], status: "active" },
-  { id: 22, name: "Đinh Thị Thủy", username: "thuydt", email: "thuydt@company.com", unit: "HR Department", roles: ["Recruiter"], status: "active" },
-  { id: 23, name: "Lê Hoàng Nam", username: "namlh", email: "namlh@company.com", unit: "IT Department", roles: ["System Admin"], status: "active" },
-  { id: 24, name: "Phạm Thị Yến", username: "yenpt", email: "yenpt@company.com", unit: "Marketing", roles: ["Marketing Manager"], status: "active" },
-  { id: 25, name: "Nguyễn Đức Minh", username: "minhnd", email: "minhnd@company.com", unit: "Sales", roles: ["Sales Rep"], status: "active" },
+  { id: 1, employeeId: "NV001", name: "Nguyễn Văn An", username: "annv", email: "annv@company.com", phone: "0901234567", unit: "IT Department", position: "IT Manager", roles: ["Admin", "Manager"], ipAddresses: ["192.168.1.10", "10.0.0.5"], status: "active" },
+  { id: 2, employeeId: "NV002", name: "Trần Thị Bình", username: "binhtt", email: "binhtt@company.com", phone: "0902345678", unit: "HR Department", position: "HR Director", roles: ["HR Manager"], ipAddresses: ["192.168.1.20"], status: "active" },
+  { id: 3, employeeId: "NV003", name: "Lê Nhật Khôi", username: "khoiln1", email: "khoiln1@company.com", phone: "0903456789", unit: "Data Team", position: "Senior Data Analyst", roles: ["Data Analyst", "DQ Admin"], ipAddresses: ["192.168.1.30", "10.0.0.15"], status: "active" },
+  { id: 4, employeeId: "NV004", name: "Phạm Minh Đức", username: "ducpm", email: "ducpm@company.com", phone: "0904567890", unit: "IT Department", position: "Developer", roles: ["Developer"], ipAddresses: ["192.168.1.40"], status: "inactive" },
+  { id: 5, employeeId: "NV005", name: "Hoàng Thu Thảo", username: "thaoht", email: "thaoht@company.com", phone: "0905678901", unit: "Marketing", position: "Marketing Staff", roles: ["User"], ipAddresses: [], status: "active" },
+  { id: 6, employeeId: "NV006", name: "Vũ Tuấn Anh", username: "anhvt", email: "anhvt@company.com", phone: "0906789012", unit: "Sales", position: "Sales Director", roles: ["Sales Manager"], ipAddresses: ["192.168.2.10"], status: "active" },
+  { id: 7, employeeId: "NV007", name: "Đặng Thị Mai", username: "maidt", email: "maidt@company.com", phone: "0907890123", unit: "HR Department", position: "HR Staff", roles: ["User"], ipAddresses: [], status: "active" },
+  { id: 8, employeeId: "NV008", name: "Ngô Văn Hùng", username: "hungnv", email: "hungnv@company.com", phone: "0908901234", unit: "IT Department", position: "DevOps Engineer", roles: ["DevOps", "SRE"], ipAddresses: ["192.168.1.50", "10.0.0.25", "172.16.0.5"], status: "active" },
+  { id: 9, employeeId: "NV009", name: "Bùi Thị Lan", username: "lanbt", email: "lanbt@company.com", phone: "0909012345", unit: "Finance", position: "Accountant", roles: ["Accountant"], ipAddresses: ["192.168.3.10"], status: "inactive" },
+  { id: 10, employeeId: "NV010", name: "Trịnh Quốc Bảo", username: "baotq", email: "baotq@company.com", phone: "0910123456", unit: "Board", position: "Director", roles: ["Admin", "Auditor"], ipAddresses: ["192.168.0.1"], status: "active" },
+  { id: 11, employeeId: "NV011", name: "Lý Thị Hà", username: "halt", email: "halt@company.com", phone: "0911234567", unit: "Marketing", position: "Marketing Staff", roles: ["User"], ipAddresses: [], status: "active" },
+  { id: 12, employeeId: "NV012", name: "Nguyễn Thanh Tùng", username: "tungnt", email: "tungnt@company.com", phone: "0912345678", unit: "IT Department", position: "Tech Lead", roles: ["Developer", "Tech Lead"], ipAddresses: ["192.168.1.60"], status: "active" },
+  { id: 13, employeeId: "NV013", name: "Võ Minh Quang", username: "quangvm", email: "quangvm@company.com", phone: "0913456789", unit: "Data Team", position: "Data Engineer", roles: ["Data Engineer"], ipAddresses: ["192.168.1.35"], status: "active" },
+  { id: 14, employeeId: "NV014", name: "Phan Thị Hương", username: "huongpt", email: "huongpt@company.com", phone: "0914567890", unit: "Finance", position: "Finance Manager", roles: ["Finance Manager"], ipAddresses: ["192.168.3.20"], status: "active" },
+  { id: 15, employeeId: "NV015", name: "Đỗ Văn Thành", username: "thanhdv", email: "thanhdv@company.com", phone: "0915678901", unit: "IT Department", position: "Security Admin", roles: ["Security Admin"], ipAddresses: ["192.168.1.5", "10.0.0.2"], status: "active" },
+  { id: 16, employeeId: "NV016", name: "Lương Thị Ngọc", username: "ngoclt", email: "ngoclt@company.com", phone: "0916789012", unit: "Customer Service", position: "Support Lead", roles: ["Support Lead"], ipAddresses: ["192.168.4.10"], status: "active" },
+  { id: 17, employeeId: "NV017", name: "Trương Văn Hải", username: "haitv", email: "haitv@company.com", phone: "0917890123", unit: "Operations", position: "Ops Manager", roles: ["Ops Manager"], ipAddresses: ["192.168.5.10"], status: "active" },
+  { id: 18, employeeId: "NV018", name: "Mai Anh Tuấn", username: "tuanma", email: "tuanma@company.com", phone: "0918901234", unit: "Data Team", position: "BI Analyst", roles: ["BI Analyst"], ipAddresses: ["192.168.1.38"], status: "active" },
+  { id: 19, employeeId: "NV019", name: "Hoàng Văn Phúc", username: "phuchv", email: "phuchv@company.com", phone: "0919012345", unit: "IT Department", position: "QA Engineer", roles: ["QA Engineer"], ipAddresses: ["192.168.1.70"], status: "inactive" },
+  { id: 20, employeeId: "NV020", name: "Nguyễn Thị Linh", username: "linhnt", email: "linhnt@company.com", phone: "0920123456", unit: "Legal", position: "Legal Advisor", roles: ["Legal Advisor"], ipAddresses: ["192.168.6.10"], status: "active" },
+  { id: 21, employeeId: "", name: "Cao Minh Trí", username: "tricm", email: "tricm@company.com", phone: "0921234567", unit: "Research", position: "Researcher", roles: ["Researcher"], ipAddresses: [], status: "active" },
+  { id: 22, employeeId: "NV022", name: "Đinh Thị Thủy", username: "thuydt", email: "thuydt@company.com", phone: "0922345678", unit: "HR Department", position: "Recruiter", roles: ["Recruiter"], ipAddresses: ["192.168.1.25"], status: "active" },
+  { id: 23, employeeId: "NV023", name: "Lê Hoàng Nam", username: "namlh", email: "namlh@company.com", phone: "0923456789", unit: "IT Department", position: "System Admin", roles: ["System Admin"], ipAddresses: ["192.168.1.2", "10.0.0.1"], status: "active" },
+  { id: 24, employeeId: "NV024", name: "Phạm Thị Yến", username: "yenpt", email: "yenpt@company.com", phone: "0924567890", unit: "Marketing", position: "Marketing Manager", roles: ["Marketing Manager"], ipAddresses: ["192.168.2.20"], status: "active" },
+  { id: 25, employeeId: "NV025", name: "Nguyễn Đức Minh", username: "minhnd", email: "minhnd@company.com", phone: "0925678901", unit: "Sales", position: "Sales Rep", roles: ["Sales Rep"], ipAddresses: [], status: "active" },
 ];
 
 export function UsersTab() {
@@ -51,7 +51,7 @@ export function UsersTab() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
-  const [editFormData, setEditFormData] = useState({ name: "", username: "", email: "", unit: "" });
+  const [editFormData, setEditFormData] = useState({ employeeId: "", name: "", username: "", email: "", phone: "", unit: "", position: "", status: "active" });
   const [searchValue, setSearchValue] = useState("");
   const [unitFilter, setUnitFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -68,7 +68,16 @@ export function UsersTab() {
 
   const handleEdit = (user: typeof mockUsers[0]) => {
     setSelectedUser(user);
-    setEditFormData({ name: user.name, username: user.username, email: user.email, unit: user.unit });
+    setEditFormData({ 
+      employeeId: user.employeeId, 
+      name: user.name, 
+      username: user.username, 
+      email: user.email, 
+      phone: user.phone,
+      unit: user.unit,
+      position: user.position,
+      status: user.status
+    });
     setIsEditDialogOpen(true);
   };
 
@@ -95,21 +104,31 @@ export function UsersTab() {
     setStatusFilter("all");
   };
 
+  const unitOptions = [
+    { value: "IT Department", label: "IT Department" },
+    { value: "HR Department", label: "HR Department" },
+    { value: "Data Team", label: "Data Team" },
+    { value: "Marketing", label: "Marketing" },
+    { value: "Sales", label: "Sales" },
+    { value: "Finance", label: "Finance" },
+    { value: "Operations", label: "Operations" },
+    { value: "Customer Service", label: "Customer Service" },
+    { value: "Legal", label: "Legal" },
+    { value: "Research", label: "Research" },
+    { value: "Board", label: "Board" },
+  ];
+
   const editFields: EditFormField[] = [
+    { name: "employeeId", label: "Mã nhân viên", type: "text", value: editFormData.employeeId, disabled: true },
     { name: "name", label: "Họ tên", type: "text", value: editFormData.name, required: true },
-    { name: "username", label: "Username", type: "text", value: editFormData.username, required: true, disabled: true },
+    { name: "username", label: "Username", type: "text", value: editFormData.username, required: true, disabled: true, description: "Username phải khớp với tài khoản SSO" },
     { name: "email", label: "Email", type: "email", value: editFormData.email, required: true },
-    { name: "unit", label: "Đơn vị", type: "select", value: editFormData.unit, required: true, options: [
-      { value: "IT Department", label: "IT Department" },
-      { value: "HR Department", label: "HR Department" },
-      { value: "Data Team", label: "Data Team" },
-      { value: "Marketing", label: "Marketing" },
-      { value: "Sales", label: "Sales" },
-      { value: "Finance", label: "Finance" },
-      { value: "Operations", label: "Operations" },
-      { value: "Customer Service", label: "Customer Service" },
-      { value: "Legal", label: "Legal" },
-      { value: "Research", label: "Research" },
+    { name: "phone", label: "Số điện thoại", type: "text", value: editFormData.phone },
+    { name: "unit", label: "Đơn vị", type: "select", value: editFormData.unit, required: true, options: unitOptions },
+    { name: "position", label: "Vị trí / Chức danh", type: "text", value: editFormData.position },
+    { name: "status", label: "Trạng thái", type: "select", value: editFormData.status, required: true, options: [
+      { value: "active", label: "Hoạt động" },
+      { value: "inactive", label: "Ngừng hoạt động" },
     ]},
   ];
 
@@ -221,10 +240,16 @@ export function UsersTab() {
         description="Thông tin chi tiết người dùng"
         badges={selectedUser ? [{ label: selectedUser.status === "active" ? "Hoạt động" : "Ngừng hoạt động", variant: selectedUser.status === "active" ? "success" : "secondary" }] : []}
         fields={selectedUser ? [
+          { label: "Mã nhân viên", value: selectedUser.employeeId || "Chưa có" },
           { label: "Username", value: selectedUser.username },
           { label: "Email", value: selectedUser.email },
+          { label: "Số điện thoại", value: selectedUser.phone || "Chưa có" },
           { label: "Đơn vị", value: selectedUser.unit },
+          { label: "Vị trí / Chức danh", value: selectedUser.position || "Chưa có" },
           { label: "Vai trò", value: <div className="flex gap-1 flex-wrap">{selectedUser.roles.map(r => <Badge key={r} variant="secondary" className="font-normal">{r}</Badge>)}</div> },
+          { label: "IP Address", value: selectedUser.ipAddresses.length > 0 
+            ? <div className="flex gap-1 flex-wrap">{selectedUser.ipAddresses.map(ip => <Badge key={ip} variant="outline" className="font-mono text-xs">{ip}</Badge>)}</div>
+            : "Không giới hạn" },
           { label: "Trạng thái", value: selectedUser.status === "active" ? "Hoạt động" : "Ngừng hoạt động" },
         ] : []}
       />

@@ -59,7 +59,7 @@ export function EditFormPanel({
 
         <form onSubmit={handleSubmit}>
           <ScrollArea className="flex-1">
-            <div className="space-y-6 pb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
               {fields.map((field) => (
                 <div key={field.name} className="space-y-2">
                   <Label htmlFor={field.name}>

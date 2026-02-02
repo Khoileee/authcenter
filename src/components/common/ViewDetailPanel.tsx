@@ -56,7 +56,7 @@ export function ViewDetailPanel({
         <Separator className="my-6" />
 
         <ScrollArea className="flex-1">
-          <div className="space-y-6 pb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
             {fields.map((field, index) => (
               <div key={index} className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground">
